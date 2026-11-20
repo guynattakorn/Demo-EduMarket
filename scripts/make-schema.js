@@ -1,10 +1,8 @@
 const fs = require('fs');
 
-const js = fs.readFileSync('app-decoded.js', 'utf8');
-const end = js.indexOf('function Xu(');
-const code = js.substring(0, end);
-const fn = new Function(code + '; return Mn();');
-const data = fn();
+// Seed data: src/data/seed.js -> db/seed-data.js (run `npm run build` first)
+const { Mn } = require('../db/seed-data');
+const data = Mn();
 
 function sqlEscape(val) {
   if (val === null || val === undefined) return 'NULL';
@@ -272,6 +270,9 @@ sql += '\n';
 for (const [studentId, modules] of Object.entries(data.progress)) {
   sql += `INSERT INTO student_progress (student_id, modules) VALUES (${sqlEscape(studentId)}, ${sqlEscape(modules)}) ON CONFLICT (student_id) DO UPDATE SET modules = EXCLUDED.modules;\n`;
 }
+
+// Phase 1–8 schema upgrade (new columns, promotions, chat appointments, announcements, storage bucket)
+sql += '\n' + fs.readFileSync('supabase/upgrade-phase1-8.sql', 'utf8');
 
 if (!fs.existsSync('supabase')) fs.mkdirSync('supabase');
 fs.writeFileSync('supabase/schema.sql', sql, 'utf8');

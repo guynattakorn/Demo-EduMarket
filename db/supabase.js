@@ -27,12 +27,11 @@ if (isCloudConfigured) {
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LOCAL_DB_PATH = path.join(DATA_DIR, 'local-db.json');
 
+// Seed data comes from src/data/seed.js (the same Mn() the frontend uses),
+// compiled to CommonJS at db/seed-data.js by `npm run build`.
 function getSeedData() {
-  const js = fs.readFileSync(path.join(__dirname, '..', 'app-decoded.js'), 'utf8');
-  const end = js.indexOf('function Xu(');
-  const code = js.substring(0, end);
-  const fn = new Function(code + '; return Mn();');
-  return fn();
+  const { Mn } = require('./seed-data');
+  return Mn();
 }
 
 function getLocalState() {
@@ -61,6 +60,206 @@ function saveLocalState(state) {
   fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(state, null, 2), 'utf8');
 }
 
+
+// ---------------------------------------------------------------------------
+// Table mappings: frontend state (camelCase) <-> Supabase rows (snake_case)
+// `legacy` lists the columns that exist before supabase/upgrade-phase1-8.sql,
+// so syncing keeps working (with fewer fields) on a database that was not upgraded yet.
+// ---------------------------------------------------------------------------
+const num = (v, d = 0) => (v === null || v === undefined || v === '' || Number.isNaN(Number(v)) ? d : Number(v));
+const iso = (v) => v || new Date().toISOString();
+
+/** preparation days before hand-over (old rows: preorder = 1 day) */
+const leadDays = (p) => {
+  const n = Number(p.leadDays);
+  return Number.isFinite(n) && n >= 0 ? Math.round(n) : p.preorder ? 1 : 0;
+};
+
+const TABLES = [
+  {
+    key: 'classes', table: 'classes', level: 0,
+    toRow: (c) => ({ id: String(c.id), name: c.name, code: c.code, teacher_id: c.teacherId || null }),
+    fromRow: (c) => ({ id: c.id, name: c.name, code: c.code, teacherId: c.teacher_id }),
+    legacy: ['id', 'name', 'code', 'teacher_id'],
+  },
+  {
+    key: 'users', table: 'users', level: 1,
+    toRow: (u) => ({ id: String(u.id), name: u.name, role: u.role, avatar: u.avatar || null, class_id: u.classId || null }),
+    fromRow: (u) => ({ id: u.id, name: u.name, role: u.role, avatar: u.avatar, classId: u.class_id }),
+    legacy: ['id', 'name', 'role', 'avatar', 'class_id'],
+  },
+  {
+    key: 'shops', table: 'shops', level: 2,
+    toRow: (s) => ({
+      id: String(s.id), name: s.name, tagline: s.tagline || '', emoji: s.emoji || '🏪', color: s.color || 'lime',
+      class_id: s.classId || null, members: s.members || [],
+      booth_location: s.boothLocation || null, open_hours: s.openHours || null, owner_id: s.ownerId || null,
+    }),
+    fromRow: (s) => ({
+      id: s.id, name: s.name, tagline: s.tagline, emoji: s.emoji, color: s.color, classId: s.class_id, members: s.members || [],
+      boothLocation: s.booth_location ?? undefined, openHours: s.open_hours ?? undefined, ownerId: s.owner_id ?? undefined,
+    }),
+    legacy: ['id', 'name', 'tagline', 'emoji', 'color', 'class_id', 'members'],
+  },
+  {
+    key: 'products', table: 'products', level: 3,
+    toRow: (p) => ({
+      id: String(p.id), shop_id: p.shopId, name: p.name, description: p.description || '', price: num(p.price),
+      cost: p.cost === null || p.cost === undefined || p.cost === '' ? null : num(p.cost), stock: num(p.stock),
+      category: p.category || '', emoji: p.emoji || '📦', color: p.color || 'lime', image: p.image || null,
+      views: num(p.views), wish_base: num(p.wishBase), wished_by: p.wishedBy || [],
+      // preorder is kept for older databases: true when the product needs preparation days
+      preorder: leadDays(p) > 0, lead_days: leadDays(p),
+      active: p.active !== false, created_at: p.createdAt || undefined,
+    }),
+    fromRow: (p) => ({
+      id: p.id, shopId: p.shop_id, name: p.name, description: p.description, price: Number(p.price),
+      cost: p.cost === null ? null : Number(p.cost), stock: p.stock, category: p.category, emoji: p.emoji, color: p.color,
+      image: p.image, views: p.views, wishBase: p.wish_base, wishedBy: p.wished_by || [],
+      leadDays: p.lead_days === null || p.lead_days === undefined ? (p.preorder ? 1 : 0) : Number(p.lead_days),
+      createdAt: p.created_at, active: p.active !== false,
+    }),
+    legacy: ['id', 'shop_id', 'name', 'description', 'price', 'cost', 'stock', 'category', 'emoji', 'color', 'image', 'views', 'wish_base', 'wished_by', 'preorder', 'created_at'],
+  },
+  {
+    key: 'promotions', table: 'promotions', level: 4,
+    toRow: (p) => ({
+      id: String(p.id), shop_id: p.shopId, type: p.type, title: p.title || '', product_ids: p.productIds || [],
+      discount_type: p.discountType || 'amount', value: num(p.value), min_spend: num(p.minSpend), code: p.code || null,
+      max_uses: num(p.maxUses), used_count: num(p.usedCount), expires_at: p.expiresAt || null, active: p.active !== false,
+      deleted: Boolean(p.deleted), created_by: p.createdBy || null, created_at: iso(p.createdAt),
+    }),
+    fromRow: (p) => ({
+      id: p.id, shopId: p.shop_id, type: p.type, title: p.title, productIds: p.product_ids || [], discountType: p.discount_type,
+      value: Number(p.value), minSpend: Number(p.min_spend || 0), code: p.code, maxUses: p.max_uses || 0, usedCount: p.used_count || 0,
+      expiresAt: p.expires_at, active: p.active !== false, deleted: Boolean(p.deleted), createdBy: p.created_by, createdAt: p.created_at,
+    }),
+  },
+  {
+    key: 'orders', table: 'orders', level: 4, order: ['created_at', false],
+    toRow: (o) => ({
+      id: String(o.id), buyer_id: o.buyer || null, shop_id: o.shopId, items: o.items || [], status: o.status || 'awaiting',
+      pickup: o.pickup || '', time: o.time || '', is_demo: Boolean(o.demo), created_at: iso(o.date),
+      pickup_type: o.pickupType || 'meetup', subtotal: num(o.subtotal), discount_amount: num(o.discountAmount), total: num(o.total),
+      promo_code: o.promoCode || null, voucher_id: o.voucherId || null, history: o.history || [], updated_at: o.updatedAt || null,
+      lead_days: num(o.leadDays), ready_by: o.readyBy || null,
+    }),
+    fromRow: (o) => ({
+      id: o.id, buyer: o.buyer_id, shopId: o.shop_id, items: o.items || [], status: o.status, pickup: o.pickup, time: o.time,
+      date: o.created_at, demo: Boolean(o.is_demo), pickupType: o.pickup_type || 'meetup',
+      subtotal: o.subtotal === null || o.subtotal === undefined ? undefined : Number(o.subtotal),
+      discountAmount: Number(o.discount_amount || 0),
+      leadDays: Number(o.lead_days || 0) || undefined, readyBy: o.ready_by || undefined,
+      total: o.total === null || o.total === undefined ? undefined : Number(o.total),
+      promoCode: o.promo_code || null, voucherId: o.voucher_id || null, history: o.history || [], updatedAt: o.updated_at || undefined,
+    }),
+    legacy: ['id', 'buyer_id', 'shop_id', 'items', 'status', 'pickup', 'time', 'is_demo', 'created_at'],
+  },
+  {
+    key: 'chatAppointments', table: 'chat_appointments', level: 4,
+    toRow: (a) => ({
+      id: String(a.id || a.threadKey), thread_key: a.threadKey, shop_id: a.shopId, buyer_id: a.buyerId, location: a.location,
+      time: a.time, proposed_by: a.proposedBy, confirmed: Boolean(a.confirmed), confirmed_by: a.confirmedBy || null, updated_at: iso(a.updatedAt),
+    }),
+    fromRow: (a) => ({
+      id: a.id, threadKey: a.thread_key, shopId: a.shop_id, buyerId: a.buyer_id, location: a.location, time: a.time,
+      proposedBy: a.proposed_by, confirmed: Boolean(a.confirmed), confirmedBy: a.confirmed_by, updatedAt: a.updated_at,
+    }),
+    conflict: 'thread_key',
+  },
+  {
+    key: 'reviews', table: 'reviews', level: 5, order: ['created_at', false],
+    toRow: (r) => ({ id: String(r.id), product_id: r.productId, user_id: r.userId || null, rating: num(r.rating, 5), text: r.text || '', created_at: iso(r.date) }),
+    fromRow: (r) => ({ id: r.id, productId: r.product_id, userId: r.user_id, rating: r.rating, text: r.text, date: r.created_at }),
+    legacy: ['id', 'product_id', 'user_id', 'rating', 'text', 'created_at'],
+  },
+  {
+    key: 'notifications', table: 'notifications', level: 5, order: ['created_at', false],
+    toRow: (n) => ({
+      id: String(n.id), user_id: n.to, title: n.title, text: n.text || '', type: n.type || 'info', is_read: Boolean(n.read), created_at: iso(n.date),
+      target_type: n.targetType || null, target_id: n.targetId || null, shop_id: n.shopId || null, buyer_id: n.buyerId || null,
+      thread_key: n.threadKey || null, peer_id: n.peerId || null,
+    }),
+    fromRow: (n) => {
+      const out = { id: n.id, to: n.user_id, title: n.title, text: n.text, type: n.type, read: Boolean(n.is_read), date: n.created_at };
+      for (const [k, col] of [['targetType', 'target_type'], ['targetId', 'target_id'], ['shopId', 'shop_id'], ['buyerId', 'buyer_id'], ['threadKey', 'thread_key'], ['peerId', 'peer_id']])
+        if (n[col]) out[k] = n[col];
+      return out;
+    },
+    legacy: ['id', 'user_id', 'title', 'text', 'type', 'is_read', 'created_at'],
+  },
+  {
+    key: 'messages', table: 'messages', level: 5, order: ['created_at', true],
+    toRow: (m) => ({
+      id: String(m.id), from_user_id: m.from, to_user_id: m.to || null, text: m.text || '', created_at: iso(m.date),
+      thread_key: m.threadKey || null, shop_id: m.shopId || null, buyer_id: m.buyerId || null, sender_name: m.senderName || null,
+      image_url: m.imageUrl || null, context_product_id: m.contextProductId || null, context_order_id: m.contextOrderId || null, kind: m.kind || 'text',
+    }),
+    fromRow: (m) => {
+      const out = { id: m.id, from: m.from_user_id, to: m.to_user_id, text: m.text, date: m.created_at };
+      for (const [k, col] of [['threadKey', 'thread_key'], ['shopId', 'shop_id'], ['buyerId', 'buyer_id'], ['senderName', 'sender_name'], ['imageUrl', 'image_url'], ['contextProductId', 'context_product_id'], ['contextOrderId', 'context_order_id'], ['kind', 'kind']])
+        if (m[col]) out[k] = m[col];
+      return out;
+    },
+    legacy: ['id', 'from_user_id', 'to_user_id', 'text', 'created_at'],
+  },
+  {
+    key: 'assignments', table: 'assignments', level: 5,
+    toRow: (a) => ({ id: String(a.id), class_id: a.classId || null, teacher_id: a.teacherId || null, title: a.title, body: a.body || '', due: a.due || null, attachments: a.attachments || [] }),
+    fromRow: (a) => ({ id: a.id, classId: a.class_id, teacherId: a.teacher_id, title: a.title, body: a.body, due: a.due, attachments: a.attachments || [] }),
+    legacy: ['id', 'class_id', 'teacher_id', 'title', 'body', 'due'],
+  },
+  {
+    key: 'contents', table: 'contents', level: 5,
+    toRow: (c) => ({
+      id: String(c.id), class_id: c.classId || null, title: c.title, category: c.category || '', body: c.body || '',
+      attachments: c.attachments || [], teacher_id: c.teacherId || null,
+      // Large legacy data-URL files are not copied to the cloud (they live in the browser only).
+      file: c.file && !String(c.file.data || '').startsWith('data:') ? c.file : null,
+    }),
+    fromRow: (c) => ({ id: c.id, classId: c.class_id, title: c.title, category: c.category, body: c.body, attachments: c.attachments || [], teacherId: c.teacher_id, file: c.file || undefined }),
+    legacy: ['id', 'class_id', 'title', 'category', 'body'],
+  },
+  {
+    key: 'announcements', table: 'announcements', level: 5, order: ['created_at', false],
+    toRow: (a) => ({ id: String(a.id), class_id: a.classId || null, teacher_id: a.teacherId || null, title: a.title, text: a.text || '', created_at: iso(a.date) }),
+    fromRow: (a) => ({ id: a.id, classId: a.class_id, teacherId: a.teacher_id, title: a.title, text: a.text, date: a.created_at }),
+  },
+  {
+    key: 'submissions', table: 'submissions', level: 6,
+    toRow: (x) => ({ id: String(x.id), assignment_id: x.assignmentId, student_id: x.userId, body: x.text || '', grade: x.score === undefined || x.score === null ? null : String(x.score), feedback: x.feedback || null, created_at: iso(x.date) }),
+    fromRow: (x) => {
+      const out = { id: x.id, assignmentId: x.assignment_id, userId: x.student_id, text: x.body, date: x.created_at };
+      if (x.grade !== null && x.grade !== undefined && x.grade !== '') out.score = Number(x.grade);
+      if (x.feedback) out.feedback = x.feedback;
+      return out;
+    },
+    legacy: ['id', 'assignment_id', 'student_id', 'body', 'grade', 'feedback', 'created_at'],
+  },
+  {
+    key: 'feedback', table: 'shop_feedback', level: 5, order: ['created_at', false],
+    toRow: (f) => ({ id: String(f.id), shop_id: f.shopId, teacher_id: f.teacherId || null, score: num(f.score), text: f.text || '', created_at: iso(f.date) }),
+    fromRow: (f) => ({ id: f.id, shopId: f.shop_id, teacherId: f.teacher_id, score: f.score, text: f.text, date: f.created_at }),
+  },
+  {
+    key: 'logs', table: 'logs', level: 5,
+    toRow: (l) => ({ id: String(l.id), shop_id: l.shopId, product_id: l.productId || null, type: l.type, before_val: num(l.before), after_val: num(l.after), reason: l.reason || '', actor: l.actor || null, created_at: iso(l.date) }),
+    fromRow: (l) => ({ id: l.id, shopId: l.shop_id, productId: l.product_id, type: l.type, before: Number(l.before_val), after: Number(l.after_val), reason: l.reason, actor: l.actor, date: l.created_at }),
+    legacy: ['id', 'shop_id', 'product_id', 'type', 'before_val', 'after_val', 'reason', 'actor', 'created_at'],
+  },
+];
+
+const isMissingTable = (error) =>
+  error && (error.code === '42P01' || error.code === 'PGRST205' || /does not exist|could not find the table/i.test(error.message || ''));
+const isMissingColumn = (error) =>
+  error && (error.code === '42703' || error.code === 'PGRST204' || /column .* (does not exist|of .* not found)|could not find the .* column/i.test(error.message || ''));
+const warned = new Set();
+const warnOnce = (key, msg) => {
+  if (warned.has(key)) return;
+  warned.add(key);
+  console.warn(msg);
+};
+
 /**
  * Fetch full state from Supabase or Local Storage
  */
@@ -70,313 +269,72 @@ async function getState() {
   }
 
   try {
-    const [
-      { data: users, error: errUsers },
-      { data: classes, error: errClasses },
-      { data: shops, error: errShops },
-      { data: products, error: errProducts },
-      { data: orders, error: errOrders },
-      { data: reviews, error: errReviews },
-      { data: progressRows, error: errProgress },
-      { data: assignments, error: errAssignments },
-      { data: contents, error: errContents },
-      { data: logs, error: errLogs },
-      { data: notifications, error: errNotifs },
-      { data: messages, error: errMessages },
-    ] = await Promise.all([
-      supabase.from('users').select('*'),
-      supabase.from('classes').select('*'),
-      supabase.from('shops').select('*'),
-      supabase.from('products').select('*'),
-      supabase.from('orders').select('*').order('created_at', { ascending: false }),
-      supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+    const results = await Promise.all([
+      ...TABLES.map((t) => {
+        let q = supabase.from(t.table).select('*');
+        if (t.order) q = q.order(t.order[0], { ascending: t.order[1] });
+        return q;
+      }),
       supabase.from('student_progress').select('*'),
-      supabase.from('assignments').select('*'),
-      supabase.from('contents').select('*'),
-      supabase.from('logs').select('*'),
-      supabase.from('notifications').select('*').order('created_at', { ascending: false }),
-      supabase.from('messages').select('*').order('created_at', { ascending: true }),
     ]);
+    const byKey = {};
+    TABLES.forEach((t, i) => (byKey[t.key] = results[i]));
+    const progressRes = results[TABLES.length];
 
-    if (errUsers || errProducts || errOrders) {
-      console.warn('[Supabase] Warning fetching tables, falling back to local:', errUsers || errProducts || errOrders);
+    const critical = ['users', 'products', 'orders'].map((k) => byKey[k].error).find(Boolean);
+    if (critical) {
+      console.warn('[Supabase] Warning fetching tables, falling back to local:', critical);
       return getLocalState();
     }
 
-    // Convert progress table to dictionary { studentId: [modules] }
-    const progressDict = {};
-    if (progressRows) {
-      progressRows.forEach(row => {
-        progressDict[row.student_id] = row.modules || [];
-      });
+    const state = { schema: 2, progress: {} };
+    for (const t of TABLES) {
+      const { data, error } = byKey[t.key];
+      if (error) {
+        if (isMissingTable(error)) warnOnce('read:' + t.table, `[Supabase] Table "${t.table}" not found — run supabase/upgrade-phase1-8.sql`);
+        else console.warn(`[Supabase] Could not read ${t.table}:`, error.message);
+      }
+      state[t.key] = (data || []).map(t.fromRow);
     }
-
-    // Map database snake_case back to camelCase frontend schema
-    const mappedUsers = (users || []).map(u => ({
-      id: u.id,
-      name: u.name,
-      role: u.role,
-      avatar: u.avatar,
-      classId: u.class_id,
-    }));
-
-    const mappedClasses = (classes || []).map(c => ({
-      id: c.id,
-      name: c.name,
-      code: c.code,
-      teacherId: c.teacher_id,
-    }));
-
-    const mappedShops = (shops || []).map(s => ({
-      id: s.id,
-      name: s.name,
-      tagline: s.tagline,
-      emoji: s.emoji,
-      color: s.color,
-      classId: s.class_id,
-      members: s.members || [],
-    }));
-
-    const mappedProducts = (products || []).map(p => ({
-      id: p.id,
-      shopId: p.shop_id,
-      name: p.name,
-      description: p.description,
-      price: Number(p.price),
-      cost: Number(p.cost),
-      stock: p.stock,
-      category: p.category,
-      emoji: p.emoji,
-      color: p.color,
-      image: p.image,
-      views: p.views,
-      wishBase: p.wish_base,
-      wishedBy: p.wished_by || [],
-      preorder: Boolean(p.preorder),
-      createdAt: p.created_at,
-    }));
-
-    const mappedOrders = (orders || []).map(o => ({
-      id: o.id,
-      buyer: o.buyer_id,
-      shopId: o.shop_id,
-      items: o.items || [],
-      status: o.status,
-      pickup: o.pickup,
-      time: o.time,
-      date: o.created_at,
-      demo: Boolean(o.is_demo),
-    }));
-
-    const mappedReviews = (reviews || []).map(r => ({
-      id: r.id,
-      productId: r.product_id,
-      userId: r.user_id,
-      rating: r.rating,
-      text: r.text,
-      date: r.created_at,
-    }));
-
-    const mappedNotifications = (notifications || []).map(n => ({
-      id: n.id,
-      to: n.user_id,
-      title: n.title,
-      text: n.text,
-      type: n.type,
-      read: Boolean(n.is_read),
-      date: n.created_at,
-    }));
-
-    const mappedMessages = (messages || []).map(m => ({
-      id: m.id,
-      from: m.from_user_id,
-      to: m.to_user_id,
-      text: m.text,
-      date: m.created_at,
-    }));
-
-    const mappedAssignments = (assignments || []).map(a => ({
-      id: a.id,
-      classId: a.class_id,
-      teacherId: a.teacher_id,
-      title: a.title,
-      body: a.body,
-      due: a.due,
-    }));
-
-    const mappedContents = (contents || []).map(c => ({
-      id: c.id,
-      classId: c.class_id,
-      title: c.title,
-      category: c.category,
-      body: c.body,
-    }));
-
-    const mappedLogs = (logs || []).map(l => ({
-      id: l.id,
-      shopId: l.shop_id,
-      productId: l.product_id,
-      type: l.type,
-      before: l.before_val,
-      after: l.after_val,
-      reason: l.reason,
-      actor: l.actor,
-      date: l.created_at,
-    }));
-
-    return {
-      schema: 2,
-      users: mappedUsers,
-      classes: mappedClasses,
-      shops: mappedShops,
-      products: mappedProducts,
-      orders: mappedOrders,
-      reviews: mappedReviews,
-      progress: progressDict,
-      assignments: mappedAssignments,
-      submissions: [],
-      contents: mappedContents,
-      logs: mappedLogs,
-      notifications: mappedNotifications,
-      messages: mappedMessages,
-      feedback: [],
-    };
+    (progressRes.data || []).forEach((row) => {
+      state.progress[row.student_id] = row.modules || [];
+    });
+    return state;
   } catch (err) {
     console.error('[Supabase] Error loading from cloud:', err.message);
     return getLocalState();
   }
 }
 
-/**
- * Handle state sync or action dispatch
- */
-async function syncAction(action, currentState) {
-  // Always update local cache for instant resilience
-  saveLocalState(currentState);
-
-  if (!supabase) {
-    return { success: true, mode: 'local' };
+async function upsertTable(def, items) {
+  if (!Array.isArray(items) || items.length === 0) return;
+  const rows = items.map(def.toRow);
+  const conflict = def.conflict || 'id';
+  let { error } = await supabase.from(def.table).upsert(rows, { onConflict: conflict });
+  if (error && isMissingColumn(error) && def.legacy) {
+    warnOnce('cols:' + def.table, `[Supabase] "${def.table}" is missing new columns — syncing basic fields only. Run supabase/upgrade-phase1-8.sql`);
+    const legacyRows = rows.map((r) => Object.fromEntries(def.legacy.map((c) => [c, r[c]])));
+    ({ error } = await supabase.from(def.table).upsert(legacyRows, { onConflict: 'id' }));
   }
-
-  try {
-    switch (action.type) {
-      case 'ORDER': {
-        const o = action.order;
-        await supabase.from('orders').insert({
-          id: o.id,
-          buyer_id: o.buyer,
-          shop_id: o.shopId,
-          items: o.items,
-          status: o.status || 'awaiting',
-          pickup: o.pickup,
-          time: o.time,
-          is_demo: Boolean(o.demo),
-          created_at: o.date || new Date().toISOString(),
-        });
-        // Decrement stock for ordered items
-        for (const it of o.items) {
-          const { data: p } = await supabase.from('products').select('stock').eq('id', it.productId).single();
-          if (p && p.stock !== undefined) {
-            await supabase.from('products').update({ stock: Math.max(0, p.stock - it.qty) }).eq('id', it.productId);
-          }
-        }
-        break;
-      }
-      case 'DELIVER': {
-        await supabase.from('orders').update({ status: action.status }).eq('id', action.id);
-        break;
-      }
-      case 'PRODUCT': {
-        const p = action.item;
-        await supabase.from('products').upsert({
-          id: p.id,
-          shop_id: p.shopId,
-          name: p.name,
-          description: p.description,
-          price: p.price,
-          cost: p.cost,
-          stock: p.stock,
-          category: p.category,
-          emoji: p.emoji,
-          color: p.color,
-          image: p.image,
-          preorder: p.preorder,
-        });
-        break;
-      }
-      case 'SHOP': {
-        const s = action.item;
-        await supabase.from('shops').upsert({
-          id: s.id,
-          name: s.name,
-          tagline: s.tagline,
-          emoji: s.emoji,
-          color: s.color,
-          class_id: s.classId,
-          members: s.members,
-        });
-        break;
-      }
-      case 'REVIEW': {
-        const r = action.item;
-        await supabase.from('reviews').insert({
-          id: r.id,
-          product_id: r.productId,
-          user_id: r.userId,
-          rating: r.rating,
-          text: r.text,
-          created_at: r.date || new Date().toISOString(),
-        });
-        break;
-      }
-      case 'MESSAGE': {
-        const m = action.item;
-        await supabase.from('messages').insert({
-          id: m.id,
-          from_user_id: m.from,
-          to_user_id: m.to,
-          text: m.text,
-          created_at: m.date || new Date().toISOString(),
-        });
-        break;
-      }
-      case 'READ': {
-        await supabase.from('notifications').update({ is_read: true }).eq('user_id', action.user);
-        break;
-      }
-      case 'COMPLETE': {
-        const { user, moduleId } = action;
-        const { data } = await supabase.from('student_progress').select('modules').eq('student_id', user).single();
-        const current = data?.modules || [];
-        if (!current.includes(moduleId)) {
-          await supabase.from('student_progress').upsert({
-            student_id: user,
-            modules: [...current, moduleId],
-            updated_at: new Date().toISOString(),
-          });
-        }
-        break;
-      }
-      case 'VIEW': {
-        // Increment view count
-        const { data: p } = await supabase.from('products').select('views').eq('id', action.id).single();
-        if (p) {
-          await supabase.from('products').update({ views: (p.views || 0) + 1 }).eq('id', action.id);
-        }
-        break;
-      }
-      default:
-        break;
-    }
-    return { success: true, mode: 'cloud' };
-  } catch (err) {
-    console.error('[Supabase Sync Error]:', err.message);
-    return { success: false, error: err.message, mode: 'fallback' };
+  if (error) {
+    if (isMissingTable(error)) warnOnce('write:' + def.table, `[Supabase] Table "${def.table}" not found — run supabase/upgrade-phase1-8.sql`);
+    else console.error(`[Supabase Sync Error] ${def.table}:`, error.message);
   }
 }
 
 /**
- * Sync entire state (products, orders, reviews, shops, progress) to Supabase Cloud and local cache
+ * Handle a single action (POST /api/action). The browser normally uses /api/sync (full state);
+ * this path saves the full state locally and mirrors it to the cloud the same way.
+ */
+async function syncAction(action, currentState) {
+  if (!currentState) return { success: false, error: 'currentState is required' };
+  const result = await syncFullState(currentState);
+  return { success: !result.error, ...result };
+}
+
+/**
+ * Sync entire state to Supabase Cloud and the local cache.
+ * Tables are written in foreign-key order (classes -> users -> shops -> products -> orders -> …).
  */
 async function syncFullState(state) {
   // Always update local cache
@@ -387,116 +345,22 @@ async function syncFullState(state) {
   }
 
   try {
-    const promises = [];
-
-    // 1. Sync Products (upsert all products)
-    if (Array.isArray(state.products) && state.products.length > 0) {
-      const productRows = state.products.map(p => ({
-        id: String(p.id),
-        shop_id: p.shopId,
-        name: p.name,
-        description: p.description || '',
-        price: Number(p.price) || 0,
-        cost: Number(p.cost) || 0,
-        stock: Number(p.stock) || 0,
-        category: p.category || '',
-        emoji: p.emoji || '📦',
-        color: p.color || 'lime',
-        image: p.image || null,
-        views: Number(p.views) || 0,
-        wish_base: Number(p.wishBase) || 0,
-        wished_by: p.wishedBy || [],
-        preorder: Boolean(p.preorder),
-      }));
-
-      promises.push(
-        supabase.from('products').upsert(productRows, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error('[Supabase Sync Error] Products:', error.message);
-          })
-      );
+    const levels = [...new Set(TABLES.map((t) => t.level))].sort((a, b) => a - b);
+    for (const level of levels) {
+      await Promise.all(TABLES.filter((t) => t.level === level).map((t) => upsertTable(t, state[t.key])));
     }
 
-    // 2. Sync Shops
-    if (Array.isArray(state.shops) && state.shops.length > 0) {
-      const shopRows = state.shops.map(s => ({
-        id: String(s.id),
-        name: s.name,
-        tagline: s.tagline || '',
-        emoji: s.emoji || '🏪',
-        color: s.color || 'lime',
-        class_id: s.classId || null,
-        members: s.members || [],
-      }));
-
-      promises.push(
-        supabase.from('shops').upsert(shopRows, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error('[Supabase Sync Error] Shops:', error.message);
-          })
-      );
-    }
-
-    // 3. Sync Orders
-    if (Array.isArray(state.orders) && state.orders.length > 0) {
-      const orderRows = state.orders.map(o => ({
-        id: String(o.id),
-        buyer_id: o.buyer || null,
-        shop_id: o.shopId,
-        items: o.items || [],
-        status: o.status || 'awaiting',
-        pickup: o.pickup || '',
-        time: o.time || '',
-        is_demo: Boolean(o.demo),
-        created_at: o.date || new Date().toISOString(),
-      }));
-
-      promises.push(
-        supabase.from('orders').upsert(orderRows, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error('[Supabase Sync Error] Orders:', error.message);
-          })
-      );
-    }
-
-    // 4. Sync Reviews
-    if (Array.isArray(state.reviews) && state.reviews.length > 0) {
-      const reviewRows = state.reviews.map(r => ({
-        id: String(r.id),
-        product_id: r.productId,
-        user_id: r.userId || null,
-        rating: Number(r.rating) || 5,
-        text: r.text || '',
-        created_at: r.date || new Date().toISOString(),
-      }));
-
-      promises.push(
-        supabase.from('reviews').upsert(reviewRows, { onConflict: 'id' })
-          .then(({ error }) => {
-            if (error) console.error('[Supabase Sync Error] Reviews:', error.message);
-          })
-      );
-    }
-
-    // 5. Sync Student Progress
     if (state.progress && typeof state.progress === 'object') {
       const progressRows = Object.entries(state.progress).map(([student_id, modules]) => ({
         student_id,
         modules: modules || [],
         updated_at: new Date().toISOString(),
       }));
-
       if (progressRows.length > 0) {
-        promises.push(
-          supabase.from('student_progress').upsert(progressRows, { onConflict: 'student_id' })
-            .then(({ error }) => {
-              if (error) console.error('[Supabase Sync Error] Progress:', error.message);
-            })
-        );
+        const { error } = await supabase.from('student_progress').upsert(progressRows, { onConflict: 'student_id' });
+        if (error) console.error('[Supabase Sync Error] Progress:', error.message);
       }
     }
-
-    await Promise.all(promises);
     return { mode: 'cloud', synced: true };
   } catch (err) {
     console.error('[Supabase Full Sync Exception]:', err.message);

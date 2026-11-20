@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Re-theme of legacy page components to the new palette (Phase 1)
+   ========================================================================== */
+.page-intro {
+  margin-bottom: 16px;
+}
+.page-intro .eyebrow,
+.section-title .eyebrow {
+  display: none;
+}
+.stat {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+}
+.stat.lime {
+  background: var(--primary-soft) !important;
+}
+.stat span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.stat strong {
+  font-size: 20px;
+  color: var(--ink);
+}
+.stats-row {
+  gap: 12px;
+  margin: 16px 0;
+}
+@media (max-width: 767px) {
+  .stats-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.shop-banner {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  background: var(--surface) !important;
+  box-shadow: var(--shadow);
+}
+.quest-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.classroom-hero {
+  background: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+}
+.tools-callout {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+.lesson-banner {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface) !important;
+  padding: 20px;
+}
+.content-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.teacher-shop-cover {
+  border-radius: var(--radius);
+}
+.modal {
+  width: calc(100% - 24px);
+  border-radius: var(--radius-lg);
+}
+.modal-head {
+  padding: 14px 18px;
+}
+.modal-head h2 {
+  font-size: 18px;
+}
+.modal-body {
+  padding: 18px;
+}
+@media (max-width: 767px) {
+  .modal {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: calc(100dvh - 24px - var(--safe-top));
+  }
+  .modal-body {
+    padding: 16px 16px calc(16px + var(--safe-bottom));
+  }
+  .modal-head {
+    padding: 12px 16px;
+  }
+  .two-col {
+    grid-template-columns: 1fr !important;
+  }
+}
+.toast {
+  border: 0;
+  box-shadow: var(--shadow-md);
+  max-width: calc(100% - 32px);
+  font-size: 14px;
+}
+.avatar {
+  background: var(--surface-2);
+}
+.section-title h2 {
+  font-size: 18px;
+}
+
+/* Page transition: opacity only. A transform here would make position:fixed children
+   (full-screen chat on iPhone) position against the page instead of the viewport. */
+@keyframes page-fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-enter {
+  animation: page-fade 0.18s ease;
+}

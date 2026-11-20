@@ -1,0 +1,489 @@
+/* ==========================================================================
+   Learning hub (Phase 7) + teacher classroom (Phase 7/8)
+   ========================================================================== */
+.learn,
+.classroom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.learn-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.learn-head h1 {
+  margin: 0;
+}
+.learn-class {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.announce-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.announce {
+  display: flex;
+  gap: 10px;
+  background: var(--surface);
+  border: 0;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.announce p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.announce small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Horizontal schedule timeline */
+.timeline-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.timeline {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.timeline-card {
+  flex: 0 0 180px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  min-height: 112px;
+  color: var(--ink);
+}
+.timeline-card.t-green {
+  border-top-color: var(--success);
+}
+.timeline-card.t-red {
+  border-top-color: var(--danger);
+}
+.timeline-card strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+.timeline-card:active {
+  transform: scale(0.98);
+}
+.timeline-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Smart collapsible missions */
+.mission-empty {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+.missions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mission {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.mission-head {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: var(--ink);
+}
+.mission-head svg {
+  transition: transform 0.15s;
+  color: var(--muted);
+}
+.mission.open .mission-head svg {
+  transform: rotate(180deg);
+}
+.mission-kind {
+  font-size: 20px;
+}
+.mission-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.mission-title small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.mission-body {
+  padding: 0 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 12px;
+}
+.mission-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+  max-height: 9.5em;
+  overflow: hidden;
+}
+.mission-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Media buttons: PDF (red/orange soft) & Canva (blue/purple soft) */
+.attach-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.attach-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.attach-btn.pdf,
+.attach-btn.canva {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+}
+.attach-btn.image {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+.attach-btn:active {
+  transform: scale(0.98);
+}
+.attach-kind {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--ink);
+  color: #fff;
+}
+.attach-editor-list {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.attach-editor-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px 4px 10px;
+  font-size: 14px;
+}
+
+.attach-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.attach-editor-actions label.btn {
+  cursor: pointer;
+}
+.canva-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+@media (min-width: 768px) {
+  .canva-form {
+    grid-template-columns: 1fr 1.4fr auto;
+    align-items: center;
+  }
+}
+.media-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.media-frame {
+  width: 100%;
+  height: min(70dvh, 720px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.media-frame.canva {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+.media-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Lesson grid */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+@media (min-width: 600px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .lesson-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.lesson-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+.lesson-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+}
+.lesson-card h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.lesson-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: var(--primary-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.lesson-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.lesson-progress span {
+  display: block;
+  height: 100%;
+  background: var(--success);
+  border-radius: 999px;
+}
+.lesson-card-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lesson-card-foot small {
+  color: var(--muted);
+}
+.lesson-page .lesson-banner span {
+  font-size: 32px;
+}
+.lesson-page iframe {
+  border-color: var(--border) !important;
+}
+
+/* Teacher classroom */
+.class-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.class-picker {
+  width: auto !important;
+  min-width: 0;
+  max-width: 100%;
+  font-weight: 700;
+}
+.class-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.invite-code {
+  font-size: 14px;
+  color: var(--ink-2);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+.kpi-grid.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 767px) {
+  .kpi-grid.four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.tab-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tab-bar .shop-tabs {
+  flex: 1;
+  min-width: 0;
+}
+.assignment-card,
+.content-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.content-list {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 1024px) {
+  .content-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.submission-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-soft);
+}
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.person small {
+  display: block;
+  color: var(--muted);
+}
+.rtable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rtable th,
+.rtable td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-soft);
+  text-align: left;
+  font-size: 14px;
+}
+.rtable th {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+/* Phone: each table row becomes a card — never wider than the screen */
+@media (max-width: 767px) {
+  .rtable thead {
+    display: none;
+  }
+  .rtable,
+  .rtable tbody,
+  .rtable tr,
+  .rtable td {
+    display: block;
+    width: 100%;
+  }
+  .rtable tr {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+  .rtable td {
+    border: 0;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .rtable td::before {
+    content: attr(data-label);
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .rtable td:first-child::before,
+  .rtable td[data-label=""]::before {
+    content: none;
+  }
+}

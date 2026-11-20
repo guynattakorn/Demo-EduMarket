@@ -1,0 +1,15 @@
+/* EduMarket styles — bundled to /app.css by `npm run build` (scripts/build.js).
+   Order matters: legacy first, then the new design layers that override it. */
+@import "./legacy.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./shell.css";
+@import "./auth.css";
+@import "./sheet.css";
+@import "./pages.css";
+@import "./market.css";
+@import "./inbox.css";
+@import "./myshop.css";
+@import "./learn.css";
+@import "./admin.css";
+@import "./theme.css";

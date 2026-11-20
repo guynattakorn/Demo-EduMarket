@@ -1,0 +1,8 @@
+# Runtime data created by the server
+.env
+data/uploads/
+
+# Local-only folders (not part of the app source)
+backup-original/
+# Dependencies: run `npm install` (esbuild has a different binary per OS)
+node_modules/

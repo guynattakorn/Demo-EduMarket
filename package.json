@@ -4,7 +4,10 @@
   "description": "EduMarket · ห้องเรียนที่ได้ลองขายจริง - Full Clone",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node scripts/build.js",
+    "watch": "node scripts/build.js --watch",
+    "dev": "npm run build && node server.js"
   },
   "keywords": [
     "edumarket",
@@ -16,6 +19,11 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
     "dotenv": "^18.0.9",
-    "localtunnel": "^2.0.2"
+    "localtunnel": "^2.0.2",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

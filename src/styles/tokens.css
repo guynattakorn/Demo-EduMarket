@@ -1,0 +1,77 @@
+/* ==========================================================================
+   Design tokens — EduMarket theme
+   SASOM-style marketplace: flat white cards, small radii, no decorative shadows,
+   lime (#c6fa31) highlights, faded grass background behind pages.
+   ========================================================================== */
+:root {
+  /* Surfaces */
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-2: #f4f4f5;
+  --surface-3: #e4e4e7;
+  --border: #e4e4e7;
+  --border-soft: #f4f4f5;
+
+  /* Text */
+  --ink: #09090b;
+  --ink-2: #27272a;
+  --muted: #71717a;
+  --muted-2: #a1a1aa;
+
+  /* Brand: lime highlight (#c6fa31) with dark text — never white text on lime */
+  --primary: #c6fa31;
+  --primary-hover: #b8ef1c;
+  --primary-ink: #09090b;
+  --primary-soft: #f2fdd0;
+  --primary-strong: #5c7a00; /* lime-family color readable as text/border on white */
+
+  /* Status */
+  --success: #15803d;
+  --success-soft: #f0fdf4;
+  --warning: #a16207;
+  --warning-soft: #fefce8;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --info: #1d4ed8;
+  --info-soft: #eff6ff;
+  --violet: #52525b;
+  --violet-soft: #f4f4f5;
+  --sale: #dc2626;
+  --notify: #f97316; /* orange for unread counts / dots (dark text on it) */
+
+  /* Shape */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: none;
+  --shadow-md: 0 4px 16px rgba(9, 9, 11, 0.08);
+  --shadow-lg: 0 16px 48px rgba(9, 9, 11, 0.18);
+
+  /* Type */
+  --font: "Noto Sans Thai", "Noto Sans", system-ui, -apple-system, sans-serif;
+  --fs-title: 14px;
+  --fs-meta: 12px;
+  --fs-value: 16px;
+
+  /* Layout */
+  --tap: 44px;
+  --nav-h: 60px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sidebar-w: 232px;
+  --rail-w: 84px;
+  --content-max: 1200px;
+
+  /* Legacy variable remap (legacy.css reads these) */
+  --lime: var(--primary);
+  --paper: var(--surface);
+  --line: var(--border);
+  --black: var(--ink);
+  --orange: var(--danger);
+  --peach: var(--surface-2);
+
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+}

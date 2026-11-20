@@ -1,0 +1,380 @@
+/* ==========================================================================
+   Theme finish — monochrome marketplace look (loaded last)
+   Flat white cards on the light-gray page: no borders, no shadows.
+   ========================================================================== */
+.pcard,
+.order-card2,
+.shop-head-card,
+.kpi,
+.lesson-card,
+.tshop-card,
+.shopcard,
+.stat,
+.shop-banner,
+.content-card {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.pcard .product-art,
+.pcard-media {
+  background: #fafafa !important;
+}
+
+/* Product placeholder letter (overrides the legacy 85px emoji size) */
+.product-art > span.product-initial {
+  font-size: 40px;
+}
+.pdetail-media .product-art > span.product-initial {
+  font-size: 72px;
+}
+.cart-thumb .product-art > span.product-initial,
+.inv-thumb .product-art > span.product-initial,
+.chat-context-thumb .product-art > span.product-initial {
+  font-size: 20px;
+}
+.image-uploader-preview .product-art > span.product-initial {
+  font-size: 32px;
+}
+
+/* Legacy lime → black fixes (keep text readable on the new black accent) */
+.completion.yes {
+  background: var(--ink);
+  color: #fff;
+}
+.toast svg {
+  color: #fff;
+}
+
+/* ==========================================================================
+   Lime highlight (#c6fa31) — replaces the former black accents.
+   Text on lime is always dark (white on lime fails contrast).
+   ========================================================================== */
+.btn.black,
+.btn.dark,
+.status-chip.lime,
+.lime,
+.chip.black,
+.segmented-control button.selected,
+.pill-row button.selected,
+.toast,
+.thread-tag.shop,
+.bubble-row.mine .bubble,
+.attach-kind,
+.classroom-hero,
+.pcard-badge.pre,
+.brand-mark,
+.completion.yes {
+  background: var(--primary) !important;
+  color: var(--primary-ink) !important;
+  border-color: var(--primary) !important;
+}
+.btn.black:hover:not(:disabled),
+.btn.dark:hover:not(:disabled) {
+  background: var(--primary-hover) !important;
+}
+.btn.black:disabled,
+.btn.dark:disabled {
+  background: var(--surface-3) !important;
+  color: var(--muted-2) !important;
+}
+.toast svg,
+.bubble-row.mine .bubble * {
+  color: var(--primary-ink);
+}
+.order-steps li.done::before {
+  background: var(--primary);
+}
+.order-steps li.done .order-step-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-ink);
+}
+.shop-logo.tone-lime {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+.pickup-option.selected,
+.promo-type.selected {
+  background: var(--primary-soft);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+}
+.market-search:focus-within {
+  outline: 2px solid var(--primary);
+}
+/* Notification counts and unread dots: orange instead of red */
+.badge-count,
+.pill-count,
+.market-cart-btn .badge-count,
+.nav-icon .badge-count {
+  background: var(--notify) !important;
+  color: var(--ink) !important;
+}
+.unread-dot {
+  background: var(--notify) !important;
+}
+
+/* Navigation: active item gets a lime pill */
+.bottom-nav-item.active .nav-icon {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+@media (min-width: 768px) {
+  .nav-item.active {
+    background: var(--primary);
+    color: var(--primary-ink);
+  }
+}
+
+/* ==========================================================================
+   Faded grass background behind every page (cards stay solid white)
+   ========================================================================== */
+html,
+body,
+.shell,
+.auth-page {
+  background: transparent !important;
+}
+html {
+  background-color: var(--bg) !important;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(244, 244, 245, 0.84), rgba(244, 244, 245, 0.84)),
+    url("/assets/bg-grass.jpg") center / cover no-repeat;
+}
+
+/* Legacy spots that used lime as TEXT color (unreadable on white) */
+.invite-code b,
+.class-illustration > span {
+  color: var(--ink);
+}
+
+/* ---------- Product detail: share ---------- */
+.pdetail-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pdetail-title-row .pdetail-name {
+  margin: 0;
+  min-width: 0;
+}
+
+/* ---------- Offline banner & pull-to-refresh ---------- */
+.offline-banner {
+  position: sticky;
+  top: calc(57px + var(--safe-top));
+  z-index: 35;
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .offline-banner {
+    top: 0;
+  }
+}
+.ptr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: height 0.15s;
+}
+.ptr-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid var(--surface-3);
+  border-top-color: var(--muted-2);
+}
+.ptr-spinner.ready {
+  border-top-color: var(--ink);
+}
+.ptr-spinner.spinning {
+  border-top-color: var(--ink);
+  animation: ptr-spin 0.7s linear infinite;
+}
+@keyframes ptr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Market: search bar folds away while scrolling down (phone) ---------- */
+@media (max-width: 767px) {
+  .market-header {
+    transition: transform 0.25s ease;
+    will-change: transform;
+  }
+  .market-header.is-collapsed {
+    transform: translateY(calc(-100% - 2px));
+  }
+}
+
+/* ==========================================================================
+   Frosted surfaces — cards and bars blend with the grass background
+   instead of sitting on it as hard white boxes.
+   ========================================================================== */
+.pcard,
+.card,
+.surface,
+.order-card2,
+.shop-head-card,
+.kpi,
+.lesson-card,
+.tshop-card,
+.shopcard,
+.stat,
+.content-card,
+.mission,
+.notify-list,
+.chat-list,
+.admin-row2,
+.inv-row,
+.promo-card,
+.announce,
+.timeline-card,
+.empty,
+.cart-shop {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 4px 18px rgba(46, 70, 20, 0.07) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+}
+/* Product photos stay on clean white */
+.pcard .pcard-media,
+.pcard .product-art {
+  background: #fff !important;
+}
+.mobile-topbar,
+.market-header,
+.bottom-nav,
+.side-nav {
+  background: rgba(255, 255, 255, 0.8) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+.mobile-topbar,
+.market-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7) !important;
+}
+.bottom-nav {
+  border-top: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+.market-search {
+  background: rgba(244, 244, 245, 0.8);
+}
+.pill-row button:not(.selected) {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* ==========================================================================
+   Lesson viewer — the lesson page is part of the app page (one scroll)
+   ========================================================================== */
+.lesson-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 18px rgba(46, 70, 20, 0.07);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+}
+.lesson-head .lesson-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+.lesson-head-text {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.lesson-head-text h1 {
+  font-size: 16px;
+  line-height: 1.35;
+  margin: 0;
+}
+.lesson-head-text small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.lesson-head .chip {
+  flex-shrink: 0;
+}
+@media (max-width: 420px) {
+  .lesson-head-text small {
+    display: none;
+  }
+}
+.lesson-frame {
+  position: relative;
+  min-height: 200px;
+}
+.lesson-frame iframe {
+  display: block;
+  width: 100%;
+  border: 0 !important;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lesson-frame.is-ready iframe {
+  opacity: 1;
+}
+.lesson-loading {
+  position: absolute;
+  inset: 0 0 auto;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--muted);
+}
+.lesson-page .lesson-end {
+  margin-top: 12px;
+}
+
+/* ---------- Delivery lead time ---------- */
+.cart-lead,
+.order-ready {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+.lead-hint {
+  display: block;
+  margin: -6px 0 10px;
+}

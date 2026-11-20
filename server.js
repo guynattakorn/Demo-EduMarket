@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('./db/supabase');
 const { supabase, sb } = db;
 const auth = require('./db/auth');
+const uploads = require('./db/uploads');
 
 const PORT = process.env.PORT || 3000;
 
@@ -19,7 +20,24 @@ const MIME_TYPES = {
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.pdf': 'application/pdf',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
 };
+
+// Server-side folders/files that must never be served as static files
+// (credentials in data/, .env, server code, backups, source).
+const PRIVATE_TOP_LEVEL = new Set(['data', 'db', 'scripts', 'supabase', 'node_modules', 'backup-original', 'src']);
+const PRIVATE_FILES = new Set(['server.js', 'package.json', 'package-lock.json']);
+
+function isPublicStaticPath(relPath) {
+  const parts = relPath.split(/[\\/]+/).filter(Boolean);
+  if (parts.some((part) => part.startsWith('.'))) return false;
+  if (parts.length > 0 && PRIVATE_TOP_LEVEL.has(parts[0])) return false;
+  if (parts.length === 1 && PRIVATE_FILES.has(parts[0])) return false;
+  return true;
+}
+
+uploads.ensureUploadDir();
 
 function sendJson(res, statusCode, data) {
   res.writeHead(statusCode, {
@@ -31,24 +49,46 @@ function sendJson(res, statusCode, data) {
   res.end(JSON.stringify(data));
 }
 
-function parseBody(req) {
+function httpError(statusCode, message) {
+  const err = new Error(message);
+  err.statusCode = statusCode;
+  return err;
+}
+
+// Collects raw Buffers (so multi-byte Thai characters split across chunks stay intact)
+// and stops reading once the limit is exceeded.
+function parseBody(req, maxBytes = 10 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
-    let body = '';
+    const chunks = [];
+    let size = 0;
+    let done = false;
+    const fail = (err) => {
+      if (done) return;
+      done = true;
+      reject(err);
+    };
     req.on('data', chunk => {
-      body += chunk.toString();
-      if (body.length > 10 * 1024 * 1024) { // 10MB limit
-        reject(new Error('Payload too large'));
+      if (done) return;
+      size += chunk.length;
+      if (size > maxBytes) {
+        chunks.length = 0;
+        req.resume(); // drain the rest without buffering it
+        return fail(httpError(413, 'Payload too large'));
       }
+      chunks.push(chunk);
     });
     req.on('end', () => {
+      if (done) return;
+      done = true;
+      const body = Buffer.concat(chunks).toString('utf8');
       if (!body) return resolve({});
       try {
         resolve(JSON.parse(body));
       } catch (err) {
-        reject(err);
+        reject(httpError(400, 'Invalid JSON body'));
       }
     });
-    req.on('error', reject);
+    req.on('error', fail);
   });
 }
 
@@ -123,17 +163,66 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { success: true, ...result, savedAt: new Date().toISOString() });
       }
 
+      // 5. File upload: { filename, mimeType, dataUrl } (or { filename, mimeType, base64 })
+      //    -> { ok: true, url: "/uploads/<unique-filename>" }
+      if (cleanUrl === '/api/upload' && req.method === 'POST') {
+        const body = await parseBody(req, uploads.MAX_UPLOAD_BODY_BYTES).catch((err) => {
+          throw err.statusCode === 413 ? httpError(413, 'ไฟล์ต้องมีขนาดไม่เกิน 10 MB') : err;
+        });
+        const result = await uploads.saveUpload(body, supabase);
+        return sendJson(res, 200, result);
+      }
+
       return sendJson(res, 404, { error: 'API endpoint not found' });
     } catch (err) {
-      console.error('[API Error]:', err);
-      return sendJson(res, 500, { error: err.message });
+      const status = err.statusCode || 500;
+      if (status >= 500) console.error('[API Error]:', err);
+      return sendJson(res, status, { ok: false, error: err.message });
     }
+  }
+
+  // ----------------------------------------------------------------
+  // Uploaded files: /uploads/<name> -> data/uploads/<name>
+  // ----------------------------------------------------------------
+  if (cleanUrl.startsWith('/uploads/')) {
+    const target = uploads.resolveUploadPath(cleanUrl);
+    if (!target) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end('Not found');
+    }
+    return fs.stat(target.filePath, (statErr, stat) => {
+      if (statErr || !stat.isFile()) {
+        // Local copy missing (e.g. fresh deploy) -> fall back to the Supabase Storage copy if any.
+        const cloudUrl = uploads.cloudUrlFor(supabase, target.name);
+        if (cloudUrl) {
+          res.writeHead(302, { Location: cloudUrl });
+          return res.end();
+        }
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        return res.end('Not found');
+      }
+      const ext = path.extname(target.filePath).toLowerCase();
+      res.writeHead(200, {
+        'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
+        'Content-Length': stat.size,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'X-Content-Type-Options': 'nosniff',
+      });
+      fs.createReadStream(target.filePath).pipe(res);
+    });
   }
 
   // ----------------------------------------------------------------
   // Static File Serving
   // ----------------------------------------------------------------
-  let filePath = path.join(__dirname, cleanUrl === '/' ? 'index.html' : cleanUrl);
+  let filePath = path.resolve(__dirname, '.' + (cleanUrl === '/' ? '/index.html' : cleanUrl));
+  const relPath = path.relative(__dirname, filePath);
+
+  // Never serve files outside the project or server-only files (passwords, .env, DB, source).
+  if (relPath.startsWith('..') || path.isAbsolute(relPath) || !isPublicStaticPath(relPath)) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end('Not found');
+  }
 
   // SPA fallback for non-file requests
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
@@ -158,6 +247,6 @@ server.listen(PORT, () => {
   console.log('====================================================');
   console.log(`EduMarket is running at: http://localhost:${PORT}`);
   console.log(`Database Mode: ${db.isCloudConfigured ? '🟢 Supabase Cloud' : '🟡 Local Storage (data/local-db.json)'}`);
-  console.log('API Endpoints available: /api/state, /api/action, /api/health');
+  console.log('API Endpoints available: /api/state, /api/action, /api/sync, /api/health, /api/auth/*, /api/upload');
   console.log('====================================================');
 });

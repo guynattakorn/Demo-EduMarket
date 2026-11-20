@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Teacher "ร้านนักเรียน" + Admin console (Phase 8)
+   ========================================================================== */
+.teacher-shops,
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tshop-grid {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .tshop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  .tshop-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.tshop-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.tshop-head {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+.tshop-head h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.tshop-head small {
+  display: block;
+  color: var(--muted);
+}
+.tshop-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+.tshop-stats small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.tshop-stats strong {
+  font-size: 15px;
+}
+.tshop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.shopcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.shopcard-main {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.shopcard-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.shopcard-text h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.shopcard-text p {
+  margin: 0;
+  font-size: 14px;
+}
+.shopcard-members,
+.shopcard-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+}
+.shopcard-members span,
+.shopcard-badges span {
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.shopcard-badges b {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+/* Admin */
+.db-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 4px 4px 12px;
+  border-radius: 999px;
+  background: var(--warning-soft);
+  color: #92400e;
+  border: 1px solid #fde68a;
+  flex-wrap: wrap;
+}
+.db-pill.cloud {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: #bbf7d0;
+}
+.db-pill.offline {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: #fecaca;
+}
+.db-pill small {
+  font-weight: 600;
+  opacity: 0.8;
+}
+.db-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.db-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 34px;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+}
+@media (pointer: coarse) {
+  .db-sync {
+    min-height: var(--tap);
+  }
+}
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-row2 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.admin-row2-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.admin-row2-main.person {
+  flex-direction: row;
+}
+.admin-row2-main small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.admin-row2-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
