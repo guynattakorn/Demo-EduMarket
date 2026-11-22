@@ -7,6 +7,10 @@ import { Ea } from "../config/constants.js";
 import { Q } from "../state/context.js";
 import { Pt, timeAgo } from "../utils/format.js";
 
+// "งานจากครู" (assignments timeline + teacher materials) is hidden on the student Lessons page for now.
+// Set to true to bring it back; the teacher side (Classroom page) is unchanged.
+const SHOW_TEACHER_WORK = false;
+
 const endOfDay = (due) => new Date(`${due}T23:59:59`).getTime();
 
 /** สถานะงานของนักเรียน: ส่งแล้ว / รอส่ง / เลยกำหนด */
@@ -59,7 +63,7 @@ export function LearnPage() {
       )}
 
       {/* Horizontal schedule timeline */}
-      {assignments.length > 0 && (
+      {SHOW_TEACHER_WORK && assignments.length > 0 && (
         <section className="timeline-section" aria-label="ตารางส่งงาน">
           <h2 className="section-h">กำหนดส่ง</h2>
           <div className="timeline">
@@ -78,7 +82,7 @@ export function LearnPage() {
       )}
 
       {/* Teacher missions & media (collapses to a 48px bar when empty) */}
-      <MissionBlock assignments={assignments} contents={contents} submissionOf={submissionOf} />
+      {SHOW_TEACHER_WORK && <MissionBlock assignments={assignments} contents={contents} submissionOf={submissionOf} />}
 
       {/* Lesson grid */}
       <section aria-label="บทเรียน">

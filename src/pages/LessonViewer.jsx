@@ -18,6 +18,7 @@ body { font-family: "Noto Sans Thai", system-ui, -apple-system, sans-serif !impo
   padding: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important;
 }
 .side { position: static !important; }
+.lesson { padding: 0 !important; max-width: none !important; }
 .card {
   background: rgba(255, 255, 255, 0.86) !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
@@ -29,6 +30,10 @@ body { font-family: "Noto Sans Thai", system-ui, -apple-system, sans-serif !impo
 .tabs [role="tab"][aria-selected="true"] { background: #c6fa31 !important; color: #09090b !important; }
 .tabs [role="tab"][aria-selected="true"] b { background: #fff !important; color: #09090b !important; }
 .foot { padding-bottom: 8px !important; }
+`;
+
+const SINGLE_LESSON_CSS = `
+.tabs, [data-goto] { display: none !important; }
 `;
 
 /** บทเรียนหลักเป็นส่วนหนึ่งของหน้าแอป (เลื่อนหน้าเดียว ไม่มีกรอบเลื่อนซ้อน) และรับ XP — เดิมชื่อ Fh */
@@ -55,7 +60,8 @@ export function LessonViewer({ moduleId }) {
     if (!doc.getElementById("edumarket-embed")) {
       const style = doc.createElement("style");
       style.id = "edumarket-embed";
-      style.textContent = EMBED_CSS;
+      // A file holding several lessons shows only the one this app lesson points to.
+      style.textContent = EMBED_CSS + (lesson?.single ? SINGLE_LESSON_CSS : "");
       doc.head.appendChild(style);
     }
     // The lesson's "go to section" buttons scroll their own window — scroll the app page instead.
@@ -76,7 +82,7 @@ export function LessonViewer({ moduleId }) {
     doc.addEventListener("input", refit);
     win.addEventListener("hashchange", refit);
     setReady(true);
-  }, []);
+  }, [lesson?.single]);
 
   useEffect(() => () => observerRef.current?.disconnect(), []);
   useEffect(() => {

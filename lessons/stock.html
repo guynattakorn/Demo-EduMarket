@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock · EduMarket</title>
+<link rel="stylesheet" href="lesson.css">
+<link rel="stylesheet" href="book.css">
+</head>
+<body>
+<main class="lesson">
+  <div class="card book-top">
+    <div class="where" id="bookWhere" aria-live="polite"></div>
+    <div class="book-dots" id="bookDots" role="group" aria-label="หน้าในบทเรียน"></div>
+  </div>
+
+  <!-- 1 -->
+  <section class="page" data-title="ความต้องการซื้อแต่ละวัน">
+    <div class="card">
+      <span class="eyebrow">หัวข้อที่ 2 · Stock การวางแผนการผลิตและสต็อก</span>
+      <div class="page-head">
+        <h2>แต่ละวัน คนอยากซื้อไม่เท่ากัน</h2>
+        <p>ร้านแซนด์วิชขายชิ้นละ 30 บาท ต้นทุนชิ้นละ 15 บาท จำนวนคนที่อยากซื้อ (ความต้องการซื้อ หรือ Demand) ขึ้นอยู่กับสถานการณ์และช่วงเวลาของวันนั้น ร้านจึงไม่ควรผลิตจำนวนเท่ากันทุกวัน</p>
+      </div>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3>ความต้องการซื้อแซนด์วิช (ชิ้น)</h3>
+        <strong id="dayHeadline"></strong>
+      </div>
+      <div class="choices" id="days" role="group" aria-label="เลือกสถานการณ์"></div>
+      <svg class="chart-svg" id="dayChart" role="img"></svg>
+      <p class="say" id="dayReason"></p>
+    </div>
+    <div class="eq-box">
+      <span>หลักคิด</span>
+      <p class="eq">จำนวนที่ควรผลิต ≈ ความต้องการซื้อของวันที่จะขาย
+        <small>ไม่ใช่ยอดของวันอื่น วันที่เลือกไว้ตรงนี้จะใช้ต่อในหน้า 3–5</small></p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="page" data-title="การประเมินยอดขาย">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">การวางแผนปริมาณการผลิต</span>
+        <h2>ประเมินยอดขายจาก 3 ข้อมูล</h2>
+        <p>ใช้ข้อมูลหลายแหล่งประกอบกัน ตัวเลขที่ได้จะใกล้เคียงความต้องการซื้อจริงมากขึ้น</p>
+      </div>
+    </div>
+    <div class="tiles three">
+      <article class="tile">
+        <span class="tag">1 · บริบทของวัน</span>
+        <h3>วันนั้นมีอะไรเกิดขึ้น</h3>
+        <p>กีฬาสี Open House ช่วงสอบ หรือฝนตก ทำให้จำนวนคนและเวลาพักเปลี่ยนไป (ดูหน้า 1)</p>
+      </article>
+      <article class="tile">
+        <span class="tag">2 · คำสั่งซื้อล่วงหน้า</span>
+        <h3>ยอดที่ขายได้แน่นอน</h3>
+        <div class="art">
+          <div class="stat-row"><div><b>18</b><span>สั่งไว้ในแอป</span></div><div><b>+</b><span>&nbsp;</span></div><div><b>?</b><span>ซื้อหน้าร้าน</span></div></div>
+        </div>
+        <p>มีคนสั่งไว้ล่วงหน้า 18 ชิ้น แปลว่าขายได้อย่างน้อย 18 ชิ้น แล้วจึงเพิ่มส่วนที่คาดว่าจะซื้อหน้าร้าน</p>
+      </article>
+      <article class="tile">
+        <span class="tag">3 · ยอดขายครั้งก่อน</span>
+        <h3>นับคนที่ซื้อไม่ทันด้วย</h3>
+        <div class="art">
+          <div class="stat-row"><div><b>80</b><span>ขายได้</span></div><div><b>0</b><span>คงเหลือ</span></div><div><b>12</b><span>ซื้อไม่ทัน</span></div></div>
+        </div>
+        <p>ครั้งก่อนของหมดก่อนเวลา และมีลูกค้าอีก 12 คนที่ซื้อไม่ทัน ความต้องการซื้อจริงจึงประมาณ 80 + 12 = 92 ชิ้น ไม่ใช่ 80 ชิ้น</p>
+      </article>
+    </div>
+    <div class="eq-box">
+      <span>สูตร</span>
+      <p class="eq">ความต้องการซื้อจริง ≈ จำนวนที่ขายได้ + จำนวนลูกค้าที่ซื้อไม่ทัน
+        <small>ใช้เมื่อสินค้าหมดก่อนเวลา ถ้ามีสินค้าเหลือ ความต้องการซื้อคือจำนวนที่ขายได้</small></p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="page" data-title="ผลิตเกินและผลิตขาด">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">จุดการผลิตเกินและการผลิตขาด</span>
+        <h2>1 ช่อง = แซนด์วิช 1 ชิ้น</h2>
+        <p id="p3Intro"></p>
+      </div>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3 id="makeHeadline"></h3>
+        <strong id="makeEffect"></strong>
+      </div>
+      <div class="units big" id="makeUnits" aria-hidden="true"></div>
+      <div class="unit-legend"><span><i class="on"></i>ขายได้</span><span><i class="left"></i>ผลิตเกิน · เหลือ</span><span><i class="miss"></i>ผลิตขาด · ลูกค้าไม่ได้ซื้อ</span></div>
+      <div class="choices" id="makePresets" role="group" aria-label="ตัวอย่างจำนวนที่ผลิต"></div>
+      <div class="sliders">
+        <label class="slider">จำนวนที่ผลิต <b><span id="make3Value"></span> ชิ้น</b>
+          <input id="make3" type="range" min="0" max="100" step="1" value="50"></label>
+      </div>
+      <p class="substitution" id="lossLive"></p>
+    </div>
+    <div class="tiles two">
+      <article class="tile">
+        <span class="tag dark">ผลิตขาด (Stockout)</span>
+        <p>ลูกค้ามาแล้วแต่ของหมด เงินไม่ได้หายจากกระเป๋า แต่เสียกำไรที่ควรได้</p>
+        <p class="eq">กำไรที่สูญเสีย = จำนวนที่ขาด × (ราคาขาย − ต้นทุนต่อชิ้น)</p>
+      </article>
+      <article class="tile">
+        <span class="tag orange">ผลิตเกิน (Overstock)</span>
+        <p>ขายไม่หมด ต้นทุนของชิ้นที่เหลือกลายเป็นเงินที่จ่ายไปโดยไม่ได้อะไรกลับมา</p>
+        <p class="eq">ความเสียหายจากสินค้าคงเหลือ = จำนวนที่เหลือ × ต้นทุนต่อชิ้น</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="page" data-title="ผลิตกี่ชิ้นกำไรสูงสุด">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">เปรียบเทียบกำไร</span>
+        <h2>ผลิตพอดีกับความต้องการซื้อ กำไรสูงสุด</h2>
+        <p id="p4Intro"></p>
+      </div>
+    </div>
+    <div class="card">
+      <ol class="walk" id="cases"></ol>
+    </div>
+    <div class="eq-box">
+      <span>สูตร</span>
+      <p class="eq">จำนวนที่ขายได้ = ค่าที่น้อยกว่าระหว่าง จำนวนที่ผลิต กับ ความต้องการซื้อ</p>
+      <p class="eq">กำไร = (จำนวนที่ขายได้ × ราคาขาย) − (จำนวนที่ผลิต × ต้นทุนต่อชิ้น)
+        <small>ยังไม่หักต้นทุนคงที่</small></p>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3 id="profitHeadline"></h3>
+        <strong id="profitValue"></strong>
+      </div>
+      <svg class="chart-svg" id="profitChart" role="img"></svg>
+      <div class="sliders">
+        <label class="slider">จำนวนที่ผลิต <b><span id="make4Value"></span> ชิ้น</b>
+          <input id="make4" type="range" min="0" max="100" step="1" value="50"></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="page" data-title="สรุป">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">สรุปทั้งบท</span>
+        <h2>เตรียมจำนวนให้พอดีก่อนวันขาย</h2>
+      </div>
+    </div>
+    <div class="card">
+      <ol class="walk">
+        <li><span class="n">1</span><p><b>เริ่มจากคำสั่งซื้อล่วงหน้า</b><br>เป็นยอดที่ขายได้แน่นอน</p></li>
+        <li><span class="n">2</span><p><b>ปรับตามสถานการณ์ของวัน</b><br>กีฬาสี Open House ผลิตเพิ่ม · ช่วงสอบ ฝนตก ผลิตน้อยลง</p></li>
+        <li><span class="n">3</span><p><b>เผื่อเพิ่มประมาณ 10–20%</b><br>เพราะยอดที่ประเมินอาจคลาดเคลื่อน เช่น ประเมินไว้ 50 ชิ้น ผลิต 55–60 ชิ้น ไม่ควรเผื่อเป็นสองเท่า</p></li>
+      </ol>
+    </div>
+    <div class="card chain" id="chain"></div>
+    <div class="card">
+      <h3 style="font-size:16px;margin-bottom:8px">ข้อผิดพลาดที่พบบ่อย</h3>
+      <ul class="tips">
+        <li>ผลิตเผื่อมากเกินไปเพราะกลัวไม่พอ สุดท้ายเหลือทิ้ง</li>
+        <li>คิดว่าผลิตมากแล้วจะได้กำไรมาก ความจริงสินค้าที่เหลือทำให้กำไรลดลง</li>
+        <li>ใช้ยอดขายของวันหนึ่งไปผลิตในวันที่สถานการณ์ต่างกัน</li>
+      </ul>
+    </div>
+  </section>
+
+  <nav class="book-nav" aria-label="เปลี่ยนหน้า">
+    <button type="button" id="bookPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>ก่อนหน้า</button>
+    <button type="button" id="bookNext" class="next"><span>หน้าถัดไป</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </nav>
+</main>
+<script src="book.js"></script>
+<script src="stock.js"></script>
+</body>
+</html>

@@ -13,7 +13,7 @@ const TABS = [
   ["assignments", "งาน"],
   ["content", "สื่อการสอน"],
 ];
-const LESSON_SHORT = { cost: "ต้นทุน", demand: "ตลาด", stock: "สต็อก" };
+const LESSON_SHORT = { "profit-cost": "ต้นทุน", "stock-plan": "สต็อก" };
 
 /** หน้า "ห้องเรียน" ของครู — เดิมชื่อ Ih */
 export function ClassroomPage() {

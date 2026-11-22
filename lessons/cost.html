@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>กำไรและต้นทุน · EduMarket</title>
+<link rel="stylesheet" href="lesson.css">
+<link rel="stylesheet" href="book.css">
+</head>
+<body>
+<main class="lesson">
+  <div class="card book-top">
+    <div class="where" id="bookWhere" aria-live="polite"></div>
+    <div class="book-dots" id="bookDots" role="group" aria-label="หน้าในบทเรียน"></div>
+  </div>
+
+  <!-- 1 -->
+  <section class="page" data-title="ต้นทุนมี 2 แบบ">
+    <div class="card hero">
+      <div>
+        <span class="eyebrow">หัวข้อที่ 1 · กำไรและต้นทุน</span>
+        <h1>ขายได้เท่าไรจึงจะ <span class="mark">มีกำไร</span></h1>
+        <p>ตลอดบทนี้ใช้ตัวอย่างเดียวกัน คือร้านคุกกี้ช็อกโกแลตในงาน EduMarket เริ่มจากรู้ว่าทำคุกกี้ 1 ชิ้นใช้เงินเท่าไร แล้วต่อด้วยว่าต้องขายกี่ชิ้นจึงจะคุ้มทุน</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 320 170">
+          <rect x="0" y="0" width="320" height="170" rx="12" fill="#fff"/>
+          <g font-family="Noto Sans Thai, sans-serif" font-size="15" fill="#71717a">
+            <text x="20" y="28" font-weight="700" fill="#09090b">ต้นทุนผันแปร</text>
+            <text x="180" y="28" font-weight="700" fill="#09090b">ต้นทุนคงที่</text>
+            <text x="20" y="162">ทำ 10 · 20 · 30 ชิ้น</text>
+            <text x="180" y="162">ทำ 10 · 20 · 30 ชิ้น</text>
+          </g>
+          <rect x="24" y="110" width="30" height="34" rx="5" fill="#c6fa31"/>
+          <rect x="64" y="84" width="30" height="60" rx="5" fill="#c6fa31"/>
+          <rect x="104" y="52" width="30" height="92" rx="5" fill="#c6fa31"/>
+          <rect x="184" y="76" width="30" height="68" rx="5" fill="#27272a"/>
+          <rect x="224" y="76" width="30" height="68" rx="5" fill="#27272a"/>
+          <rect x="264" y="76" width="30" height="68" rx="5" fill="#27272a"/>
+          <path d="M160 40V150" stroke="#e4e4e7" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+    <div class="tiles two">
+      <article class="tile">
+        <span class="tag">ต้นทุนผันแปร</span>
+        <h3>ยิ่งทำมาก ยิ่งจ่ายมาก</h3>
+        <p>ค่าของที่ใช้ไปกับสินค้าแต่ละชิ้น เช่น แป้ง เนย ไข่ ช็อกโกแลต ถุงใส่คุกกี้ ถ้าทำเพิ่ม ก็ต้องซื้อของเหล่านี้เพิ่ม</p>
+      </article>
+      <article class="tile">
+        <span class="tag dark">ต้นทุนคงที่</span>
+        <h3>ทำกี่ชิ้นก็จ่ายเท่าเดิม</h3>
+        <p>ค่าใช้จ่ายที่ต้องจ่ายอยู่แล้ว ไม่ว่าจะขายได้มากหรือน้อย เช่น ค่าเช่าโต๊ะ ค่าเช่าบูธ ค่าป้ายร้าน</p>
+      </article>
+    </div>
+    <p class="say">หน้า 2–4 คิดเฉพาะ<b>ต้นทุนผันแปร</b>ก่อน เพื่อหาว่าคุกกี้ 1 ชิ้นใช้เงินเท่าไร ส่วนต้นทุนคงที่ใช้ในหน้า 5 เป็นต้นไป</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="page" data-title="คิดจากส่วนที่ใช้จริง">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">ขั้นที่ 1 · ต้นทุนวัตถุดิบที่ใช้จริง</span>
+        <h2>ซื้อมาทั้งถุง แต่ใช้ไม่หมด</h2>
+        <p>ซื้อแป้ง 1 กิโลกรัม ราคา 45 บาท แต่ใช้ทำคุกกี้รอบนี้เพียง 500 กรัม ต้นทุนของรอบนี้จึงคิดเฉพาะแป้ง 500 กรัมที่ใช้ไป ไม่ใช่ 45 บาททั้งถุง</p>
+      </div>
+    </div>
+    <div class="card">
+      <ol class="walk">
+        <li><span class="n">1</span><p>ทำหน่วยให้เหมือนกันก่อน ซื้อเป็นกิโลกรัม แต่ใช้เป็นกรัม<br><span class="calc">1 กิโลกรัม = 1,000 กรัม</span></p></li>
+        <li><span class="n">2</span><p>หาราคาต่อ 1 กรัม<br><span class="calc">45 ÷ 1,000 = 0.045 บาท/กรัม</span></p></li>
+        <li><span class="n">3</span><p>คูณกับปริมาณที่ใช้จริง<br><span class="calc hot">0.045 × 500 = 22.50 บาท</span></p></li>
+      </ol>
+    </div>
+    <div class="eq-box">
+      <span>สูตรที่ 1</span>
+      <p class="eq">ต้นทุนวัตถุดิบที่ใช้จริง = (ราคาที่ซื้อ ÷ ปริมาณที่ซื้อ) × ปริมาณที่ใช้จริง
+        <small>หน่วยของปริมาณที่ซื้อและที่ใช้ต้องเป็นหน่วยเดียวกัน</small></p>
+      <div class="chips"><span>1 กิโลกรัม = 1,000 กรัม</span><span>1 ลิตร = 1,000 มิลลิลิตร</span><span>ไข่ ถุง กล่อง นับเป็นชิ้น</span></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="page" data-title="ต้นทุนผันแปรรวม">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">ขั้นที่ 2 · ต้นทุนผันแปรรวม</span>
+        <h2>รวมค่าของทุกอย่างที่ใช้ในรอบนี้</h2>
+      </div>
+      <p class="say" style="margin-top:12px">พูดง่าย ๆ คือ <b>คิดเงินของทุกอย่างที่ใช้ไปกับคุกกี้รอบนี้ แล้วนำมาบวกกัน</b> คิดแต่ละรายการแบบหน้าที่แล้ว คือคิดเฉพาะส่วนที่ใช้จริง</p>
+    </div>
+    <div class="card">
+      <div class="receipt" aria-label="รายการวัตถุดิบคุกกี้ 40 ชิ้น">
+        <div><span>แป้ง 500 กรัม (จากหน้าที่แล้ว)</span><b>22.50</b></div>
+        <div><span>เนย</span><b>60.00</b></div>
+        <div><span>ไข่ 4 ฟอง</span><b>22.00</b></div>
+        <div><span>ช็อกโกแลตชิป</span><b>71.50</b></div>
+        <div><span>ถุงใส่คุกกี้ 40 ใบ</span><b>24.00</b></div>
+        <div class="total"><span>ต้นทุนผันแปรรวม</span><span>200.00 บาท</span></div>
+      </div>
+    </div>
+    <div class="tiles two">
+      <article class="tile">
+        <span class="tag">นับรวม</span>
+        <p>วัตถุดิบ บรรจุภัณฑ์ และของที่ใช้แล้วหมดไป เช่น กระดาษรองอบ ถ้าทำอีกรอบก็ต้องจ่ายอีก</p>
+      </article>
+      <article class="tile">
+        <span class="tag dark">ยังไม่นับ</span>
+        <p>ค่าเช่าโต๊ะหรือบูธ เพราะเป็นต้นทุนคงที่ จ่ายเท่าเดิมไม่ว่าจะทำกี่ชิ้น</p>
+      </article>
+    </div>
+    <div class="eq-box">
+      <span>สูตรที่ 2</span>
+      <p class="eq">ต้นทุนผันแปรรวม = ต้นทุนรายการที่ 1 + รายการที่ 2 + … จนครบทุกรายการ
+        <small>ตัวอย่างนี้ 22.50 + 60.00 + 22.00 + 71.50 + 24.00 = 200 บาท</small></p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="page" data-title="ของเสียกับต้นทุนต่อชิ้น">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">ขั้นที่ 3–4 · ต้นทุนผันแปรต่อหน่วย</span>
+        <h2>ของเสียทำให้ต้นทุนต่อชิ้นสูงขึ้น</h2>
+        <p>วัตถุดิบ 200 บาทจากหน้าที่แล้ว ตั้งใจทำคุกกี้ 40 ชิ้น แต่อบแล้วแตกเสีย 8 ชิ้น</p>
+      </div>
+    </div>
+    <div class="card">
+      <ol class="walk">
+        <li><span class="n">1</span><p>ถ้าทำได้ครบ 40 ชิ้น ต้นทุนจะตกชิ้นละ<br><span class="calc">200 ÷ 40 = 5.00 บาท/ชิ้น</span></p></li>
+        <li><span class="n">2</span><p>แต่มีชิ้นที่เสีย 8 ชิ้น จึงเหลือคุกกี้ที่พร้อมขายเพียง<br><span class="calc warn">40 − 8 = 32 ชิ้น</span></p></li>
+        <li><span class="n">3</span><p>เงิน 200 บาทเท่าเดิม แต่ต้องหารด้วยชิ้นที่ขายได้จริง 32 ชิ้น<br><span class="calc hot">200 ÷ 32 = 6.25 บาท/ชิ้น</span></p></li>
+      </ol>
+      <p class="say" style="margin-top:12px">ของเสีย 8 ชิ้น ทำให้ต้นทุนแพงขึ้นชิ้นละ <b>1.25 บาท</b> (จาก 5.00 เป็น 6.25 บาท) เพราะชิ้นที่ดีต้องแบกค่าวัตถุดิบของชิ้นที่เสียไว้ด้วย</p>
+    </div>
+    <div class="eq-box">
+      <span>สูตรที่ 3–4</span>
+      <p class="eq">สินค้าที่พร้อมขาย = จำนวนที่ผลิต − จำนวนที่ชำรุด</p>
+      <p class="eq">ต้นทุนผันแปรต่อหน่วย = ต้นทุนผันแปรรวม ÷ สินค้าที่พร้อมขาย
+        <small>ยังไม่รวมต้นทุนคงที่</small></p>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3>ลองเลื่อนจำนวนชิ้นที่เสีย</h3>
+        <strong id="defectHeadline"></strong>
+      </div>
+      <div class="units big" id="defectUnits" aria-hidden="true"></div>
+      <div class="unit-legend"><span><i class="on"></i>พร้อมขาย</span><span><i class="bad"></i>ชำรุด</span></div>
+      <svg class="chart-svg" id="defectChart" role="img"></svg>
+      <div class="sliders">
+        <label class="slider">จำนวนชิ้นที่ชำรุด (จาก 40 ชิ้น) <b><span id="defectValue"></span> ชิ้น</b>
+          <input id="defect" type="range" min="0" max="20" step="1" value="8"></label>
+      </div>
+      <div class="readout">
+        <div><span>พร้อมขาย</span><b id="readyOut"></b></div>
+        <div class="hot"><span>ต้นทุน/ชิ้น (บาท)</span><b id="unitOut"></b></div>
+        <div class="warn"><span>แพงขึ้น (บาท)</span><b id="extraOut"></b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="page" data-title="กำไรต่อชิ้นและจุดคุ้มทุน">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">ต้นทุนคงที่และจุดคุ้มทุน</span>
+        <h2>ต้องขายกี่ชิ้น จึงจะไม่ขาดทุน</h2>
+        <p>ร้านตั้งราคาคุกกี้ชิ้นละ <b id="p5Price">20</b> บาท และต้องจ่ายค่าเช่าบูธ (ต้นทุนคงที่) วันละ <b id="p5Fixed">550</b> บาท</p>
+      </div>
+    </div>
+    <div class="card">
+      <ol class="walk">
+        <li><span class="n">1</span><p>ขาย 1 ชิ้น ได้เงิน <span id="p5Price2">20</span> บาท หักต้นทุนผันแปรต่อชิ้นจากหน้าที่แล้ว เหลือเป็น<b>กำไรส่วนเกินต่อหน่วย</b><br><span class="calc" id="cmCalc"></span></p></li>
+        <li><span class="n">2</span><p>กำไรส่วนเกินของทุกชิ้นต้องนำไปจ่ายค่าเช่าบูธ <span id="p5Fixed2">550</span> บาทให้ครบก่อน ร้านจึงจะเริ่มมีกำไร</p></li>
+        <li><span class="n">3</span><p>จำนวนชิ้นที่ต้องขายเพื่อจ่ายค่าเช่าให้ครบ คือ<b>จุดคุ้มทุน</b><br><span class="calc hot" id="bepCalc"></span></p></li>
+      </ol>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3>1 ช่อง = คุกกี้ 1 ชิ้นที่ขายได้</h3>
+        <strong id="bepHeadline"></strong>
+      </div>
+      <div class="units big" id="bepUnits" aria-hidden="true"></div>
+      <div class="unit-legend"><span><i style="background:#27272a;border-color:#27272a"></i>ใช้จ่ายค่าเช่าบูธ</span><span><i class="on"></i>เป็นกำไรสุทธิ</span></div>
+    </div>
+    <div class="eq-box">
+      <span>สูตรที่ 5–6</span>
+      <p class="eq">กำไรส่วนเกินต่อหน่วย = ราคาขายต่อหน่วย − ต้นทุนผันแปรต่อหน่วย</p>
+      <p class="eq">จุดคุ้มทุน (ชิ้น) = ต้นทุนคงที่ ÷ กำไรส่วนเกินต่อหน่วย
+        <small>ถ้าได้ทศนิยม ให้ปัดขึ้นเสมอ เช่น 16.2 → 17 ชิ้น</small></p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="page" data-title="กราฟรายได้และต้นทุนรวม">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">กำไรสุทธิ</span>
+        <h2>เส้นรายได้ตัดเส้นต้นทุนรวมที่จุดคุ้มทุน</h2>
+        <p>ทางซ้ายของจุดตัดคือขาดทุน ทางขวาคือกำไร ต้นทุนผันแปรต่อชิ้นใช้ค่าจากหน้า 4</p>
+      </div>
+    </div>
+    <div class="eq-box">
+      <span>สูตรที่ 7–9</span>
+      <p class="eq">รายได้ = ราคาขายต่อหน่วย × จำนวนที่ขายได้</p>
+      <p class="eq">ต้นทุนรวม = ต้นทุนคงที่ + (ต้นทุนผันแปรต่อหน่วย × จำนวนที่ขายได้)</p>
+      <p class="eq">กำไรสุทธิ = รายได้ − ต้นทุนรวม <small>ถ้าติดลบ หมายถึงขาดทุน</small></p>
+    </div>
+    <div class="card figure">
+      <div class="figure-head">
+        <h3 id="profitHeadline"></h3>
+        <strong id="profitValue"></strong>
+      </div>
+      <svg class="chart-svg" id="beChart" role="img"></svg>
+      <div class="legend">
+        <span><i style="background:#5c7a00"></i>รายได้</span>
+        <span><i style="background:#09090b"></i>ต้นทุนรวม</span>
+        <span><i style="background:repeating-linear-gradient(90deg,#a1a1aa 0 5px,transparent 5px 9px)"></i>ต้นทุนคงที่</span>
+        <span><i class="dot" style="background:#c6fa31"></i>จุดคุ้มทุน</span>
+      </div>
+      <div class="sliders three">
+        <label class="slider">จำนวนที่ขายได้ <b><span id="qtyValue"></span> ชิ้น</b>
+          <input id="qty" type="range" min="0" max="80" step="1" value="50"></label>
+        <label class="slider">ราคาขายต่อชิ้น <b><span id="priceValue"></span> บาท</b>
+          <input id="price" type="range" min="8" max="40" step="1" value="20"></label>
+        <label class="slider">ต้นทุนคงที่ต่อวัน <b><span id="fixedValue"></span> บาท</b>
+          <input id="fixed" type="range" min="0" max="1000" step="10" value="550"></label>
+      </div>
+      <div class="readout">
+        <div><span>รายได้ (บาท)</span><b id="revOut"></b></div>
+        <div><span>ต้นทุนรวม (บาท)</span><b id="totalOut"></b></div>
+        <div class="hot" id="netBox"><span>กำไรสุทธิ (บาท)</span><b id="netOut"></b></div>
+      </div>
+      <p class="substitution" id="subst"></p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="page" data-title="สรุป">
+    <div class="card">
+      <div class="page-head">
+        <span class="kicker">สรุปทั้งบท</span>
+        <h2>จากค่าวัตถุดิบ สู่กำไรของร้าน</h2>
+        <p>ตัวเลขทุกตัวในบทนี้ต่อกันเป็นเรื่องเดียว (ใช้ค่าที่เลื่อนไว้ในหน้า 4 และหน้า 6)</p>
+      </div>
+    </div>
+    <div class="card chain" id="chain"></div>
+    <div class="card">
+      <h3 style="font-size:16px;margin-bottom:8px">ข้อควรจำ</h3>
+      <ul class="tips">
+        <li>คิดต้นทุนจากปริมาณที่ใช้จริง และแปลงหน่วยให้ตรงกันก่อนคำนวณ</li>
+        <li>ของเสียทำให้ต้นทุนต่อชิ้นสูงขึ้น ควรหารด้วยจำนวนชิ้นที่พร้อมขายจริงเสมอ</li>
+        <li>จุดคุ้มทุนที่เป็นทศนิยมให้ปัดขึ้น เพราะขายครึ่งชิ้นไม่ได้</li>
+        <li>ใช้ต้นทุนคงที่ในช่วงเวลาเดียวกัน เช่น ค่าเช่าเดือนละ 600 บาท เปิดขาย 20 วัน คิดเป็นวันละ 30 บาท</li>
+      </ul>
+    </div>
+  </section>
+
+  <nav class="book-nav" aria-label="เปลี่ยนหน้า">
+    <button type="button" id="bookPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>ก่อนหน้า</button>
+    <button type="button" id="bookNext" class="next"><span>หน้าถัดไป</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </nav>
+</main>
+<script src="book.js"></script>
+<script src="cost.js"></script>
+</body>
+</html>

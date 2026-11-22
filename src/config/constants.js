@@ -6,30 +6,8 @@ export const Gu = "edu-marketplace-classroom-v2";
 
 /** รายการบทเรียนหลัก (iframe) ที่เปิดในหน้า "บทเรียน" */
 export const Ea = [
-  {
-    id: "cost",
-    title: "คู่มือการคำนวณต้นทุนและจุดคุ้มทุน",
-    subtitle: "บทเรียนฉบับเต็ม พร้อมตัวอย่างและเครื่องมือคำนวณ",
-    icon: "coin",
-    color: "lime",
-    src: "lesson-cost-break-even.html",
-  },
-  {
-    id: "demand",
-    title: "ความต้องการของตลาด",
-    subtitle: "วางแผนยอดขายให้ตรงกับความต้องการของตลาด",
-    icon: "trend",
-    color: "lime",
-    src: "market-demand.html",
-  },
-  {
-    id: "stock",
-    title: "สต็อกสินค้า",
-    subtitle: "วางแผนสต็อกให้พอดี ไม่ขาดไม่เหลือ",
-    icon: "box",
-    color: "lime",
-    src: "stock.html",
-  },
+  { id: "profit-cost", title: "กำไรและต้นทุน", subtitle: "ต้นทุนต่อชิ้น ผลของสินค้าชำรุด และจุดคุ้มทุน", icon: "coin", color: "lime", src: "lessons/cost.html" },
+  { id: "stock-plan", title: "Stock", subtitle: "ความต้องการซื้อแต่ละวัน การผลิตเกิน และการผลิตขาด", icon: "box", color: "lime", src: "lessons/stock.html" },
 ];
 
 export const completedLessons = (progress = []) =>

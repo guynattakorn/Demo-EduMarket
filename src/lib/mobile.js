@@ -59,7 +59,7 @@ export function useServerRefresh(data, dispatch, migrate) {
   const refresh = useCallback(
     async (manual = false) => {
       const sync = window.EduMarketSync;
-      if (!sync?.fetchServerState || !navigator.onLine) return false;
+      if (!sync?.fetchServerState) return false; // a failed fetch simply skips this round
       if (sync.hasPendingChanges()) return false;
       if (manual) setRefreshing(true);
       try {
@@ -134,17 +134,34 @@ export function usePullToRefresh(onRefresh, enabled) {
   return pull;
 }
 
-/** navigator.onLine as React state */
+/**
+ * Online state for the "offline" banner. navigator.onLine can say "offline" while the app server
+ * is still reachable (e.g. a hotspot without internet, a local server, some VPNs), so a false
+ * "offline" is double-checked against /api/health before the banner is shown.
+ */
 export function useOnline() {
-  const [online, setOnline] = useState(() => navigator.onLine !== false);
+  const [online, setOnline] = useState(true);
   useEffect(() => {
+    let alive = true;
+    const check = async () => {
+      if (navigator.onLine !== false) return alive && setOnline(true);
+      try {
+        const res = await fetch("/api/health", { cache: "no-store" });
+        if (alive) setOnline(res.ok);
+      } catch {
+        if (alive) setOnline(false);
+      }
+    };
     const on = () => setOnline(true);
-    const off = () => setOnline(false);
+    check();
     window.addEventListener("online", on);
-    window.addEventListener("offline", off);
+    window.addEventListener("offline", check);
+    const timer = setInterval(check, 15000);
     return () => {
+      alive = false;
       window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
+      window.removeEventListener("offline", check);
+      clearInterval(timer);
     };
   }, []);
   return online;
