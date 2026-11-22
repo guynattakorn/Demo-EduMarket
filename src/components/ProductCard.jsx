@@ -9,6 +9,8 @@ import { ProductImage } from "./ProductImage.jsx";
 import { Icon } from "./ui.jsx";
 
 export const stockLabel = (p) => (p.stock <= 0 ? "หมด" : `เหลือ ${p.stock} ชิ้น`);
+/** Cards show stock only when it matters (sold out or 5 left or fewer) */
+const LOW_STOCK = 5;
 
 /** การ์ดสินค้าในตลาดนัด (รูป 1:1, ชื่อ 2 บรรทัด, ราคาชิดล่าง) — เดิมชื่อ Gp */
 export function ProductCard({ p, observer = false }) {
@@ -29,7 +31,9 @@ export function ProductCard({ p, observer = false }) {
           <ProductImage p={p} />
         </button>
         <div className="pcard-badges-top">
-          <span className={"pcard-badge" + (p.stock <= 0 ? " out" : "")}>{stockLabel(p)}</span>
+          {p.stock <= LOW_STOCK && (
+            <span className={"pcard-badge" + (p.stock <= 0 ? " out" : "")}>{stockLabel(p)}</span>
+          )}
           {leadDaysOf(p) > 0 && <span className="pcard-badge pre">{deliveryLabel(p)}</span>}
           {pricing.discount > 0 && <span className="pcard-badge sale">{pricing.label}</span>}
         </div>

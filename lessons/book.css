@@ -158,7 +158,8 @@
 .walk p {
   font-size: 15px;
 }
-.walk .calc {
+.walk .calc,
+.tile .calc {
   display: inline-block;
   margin-top: 4px;
   padding: 4px 10px;
@@ -167,7 +168,8 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.walk .calc.hot {
+.walk .calc.hot,
+.tile .calc.hot {
   background: var(--lime);
 }
 .walk .calc.warn {
@@ -415,3 +417,184 @@
 .book-nav button {
   white-space: nowrap;
 }
+
+.tile .calc {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* ---------- Link to the next topic (end of each page) ---------- */
+.bridge {
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--ink);
+  background: #fff;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.bridge b {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+/* ==========================================================================
+   Pagination capsule — white rounded bar, purple ring fixed in the middle,
+   page numbers slide under it.
+   ========================================================================== */
+.book-nav {
+  --pager: #7c3aed;
+  --slot: 40px;
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.book-nav #bookPrev,
+.book-nav #bookNext {
+  flex: 0 0 auto;
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.book-nav #bookNext {
+  background: var(--ink);
+  color: #fff;
+}
+.book-nav #bookPrev:hover:not(:disabled) {
+  background: var(--soft);
+}
+.book-nav button:disabled {
+  opacity: 0.35;
+}
+.pager-window {
+  position: relative;
+  flex: 1;
+  min-width: calc(var(--slot) * 3);
+  max-width: calc(var(--slot) * 7);
+  height: 40px;
+  margin: 0 auto;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+}
+.pager-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  background: var(--pager);
+  pointer-events: none;
+}
+.pager-track {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: max-content;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pager-track button {
+  flex: 0 0 var(--slot);
+  width: var(--slot);
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.25s;
+}
+.pager-track button.seen {
+  color: var(--ink);
+}
+.pager-track button[aria-current="step"] {
+  color: #fff;
+  font-weight: 700;
+}
+@media (max-width: 420px) {
+  .book-nav #bookPrev,
+  .book-nav #bookNext {
+    padding: 6px 10px;
+  }
+  .book-nav #bookPrev {
+    font-size: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pager-track {
+    transition: none;
+  }
+}
+
+/* Lesson example callout on page 1 */
+.lead-example {
+  margin: 2px 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.lead-example .mark {
+  padding: 0 4px;
+  margin: 0 4px;
+  background: var(--lime);
+  border-radius: 4px;
+}
+
+/* ---------- Pie chart (Stock: sold / left / missed) ---------- */
+.pie-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.pie {
+  width: min(240px, 70vw);
+  height: auto;
+  flex-shrink: 0;
+}
+.pie-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 220px;
+  flex: 1;
+  max-width: 360px;
+}
+.pie-legend li {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.pie-legend b {
+  font-variant-numeric: tabular-nums;
+}
+.pie-legend i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+}
+.pie-legend i.on { background: var(--lime); border-color: #a9d81f; }
+.pie-legend i.left { background: var(--orange); border-color: var(--orange); }
+.pie-legend i.miss { background: #f4f4f5; border: 1.5px dashed var(--muted); }

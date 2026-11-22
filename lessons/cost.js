@@ -24,7 +24,6 @@ function drawDefects() {
   $('unitOut').textContent = money(s.unit);
   $('extraOut').textContent = '+' + money(s.unit - VARIABLE_TOTAL / MADE);
   $('defectHeadline').textContent = money(VARIABLE_TOTAL) + ' ÷ ' + s.ready + ' = ' + money(s.unit) + ' บาท/ชิ้น';
-  $('defectUnits').innerHTML = Array.from({ length: MADE }, (_, i) => `<span class="${i < s.ready ? 'on' : 'bad'}"></span>`).join('');
 
   const svg = $('defectChart');
   const maxD = Number($('defect').max);
@@ -56,15 +55,10 @@ function drawBreakEven() {
   $('cmCalc').textContent = fmt(s.price) + ' − ' + money(s.unit) + ' = ' + money(s.cm) + ' บาท/ชิ้น';
   if (s.bep === null) {
     $('bepCalc').textContent = 'ราคาขายไม่สูงกว่าต้นทุนต่อชิ้น จึงไม่มีจุดคุ้มทุน';
-    $('bepHeadline').textContent = 'ไม่มีจุดคุ้มทุน';
-    $('bepUnits').innerHTML = Array.from({ length: 50 }, () => '<span class="pay"></span>').join('');
     return;
   }
   const rounded = s.exact % 1 > 1e-9 ? ' → ปัดขึ้นเป็น ' + s.bep + ' ชิ้น' : ' ชิ้น';
   $('bepCalc').textContent = fmt(s.fixed) + ' ÷ ' + money(s.cm) + ' = ' + fmt(s.exact) + rounded;
-  $('bepHeadline').textContent = 'คุ้มทุนที่ ' + s.bep + ' ชิ้น';
-  const n = Math.min(100, Math.max(50, Math.ceil((s.bep + 10) / 10) * 10));
-  $('bepUnits').innerHTML = Array.from({ length: n }, (_, i) => `<span class="${i < s.bep ? 'pay' : 'on'}"></span>`).join('');
 }
 
 /* ---------- Page 6: revenue vs total cost ---------- */
@@ -141,12 +135,13 @@ function drawChain() {
   const q = Number($('qty').value);
   const net = s.price * q - (s.fixed + s.unit * q);
   const rows = [
-    ['ต้นทุนผันแปรรวม (หน้า 3)', money(VARIABLE_TOTAL) + ' บาท'],
-    ['ผลิต ' + MADE + ' ชิ้น ชำรุด ' + s.defect + ' ชิ้น พร้อมขาย', s.ready + ' ชิ้น'],
-    ['ต้นทุนผันแปรต่อหน่วย ' + money(VARIABLE_TOTAL) + ' ÷ ' + s.ready, money(s.unit) + ' บาท'],
-    ['กำไรส่วนเกินต่อหน่วย ' + fmt(s.price) + ' − ' + money(s.unit), money(s.cm) + ' บาท'],
-    ['จุดคุ้มทุน ' + fmt(s.fixed) + ' ÷ ' + money(s.cm), s.bep === null ? 'ไม่มี' : s.bep + ' ชิ้น'],
-    ['ขายได้ ' + q + ' ชิ้น ' + (net < 0 ? 'ขาดทุนสุทธิ' : 'กำไรสุทธิ'), money(Math.abs(net)) + ' บาท'],
+    ['ต้นทุนผันแปรรวม', money(VARIABLE_TOTAL) + ' บาท'],
+    ['สินค้าพร้อมขาย', s.ready + ' ชิ้น'],
+    ['ต้นทุนผันแปรต่อหน่วย', money(s.unit) + ' บาท'],
+    ['กำไรส่วนเกินต่อหน่วย', money(s.cm) + ' บาท'],
+    ['จุดคุ้มทุน', s.bep === null ? 'ไม่มี' : s.bep + ' ชิ้น'],
+    ['จำนวนที่ขายได้', q + ' ชิ้น'],
+    [net < 0 ? 'ขาดทุนสุทธิ' : 'กำไรสุทธิ', money(Math.abs(net)) + ' บาท'],
   ];
   $('chain').innerHTML = rows.map((r, i) => `<div class="${i === rows.length - 1 ? 'hot' : ''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
 }

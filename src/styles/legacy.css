@@ -1884,7 +1884,6 @@ td .btn {
 }
 .modal::backdrop {
   background: #24282065;
-  backdrop-filter: blur(5px);
 }
 .modal.wide {
   max-width: 920px;

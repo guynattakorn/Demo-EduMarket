@@ -1,10 +1,10 @@
 'use strict';
 // Book 2 "Stock": demand changes by day → over / under production → the most profitable quantity.
 const $ = (id) => document.getElementById(id);
-const PRICE = 30, COST = 15;
+const PRICE = 20, COST = 6;
 const DAYS = [
   { id: 'normal', name: 'วันเรียนปกติ', demand: 50, reason: 'ลูกค้ากลุ่มเดิม ช่วงพักเวลาเดิม ใช้ยอดขายครั้งก่อนเป็นฐานได้' },
-  { id: 'sports', name: 'วันกีฬาสี', demand: 80, reason: 'นักเรียนอยู่ในโรงเรียนทั้งวันและใช้แรงมาก จึงซื้ออาหารมากขึ้น แต่ควรดูว่ามีร้านอื่นหรืออาหารแจกฟรีหรือไม่' },
+  { id: 'sports', name: 'วันกีฬาสี', demand: 80, reason: 'นักเรียนอยู่ในโรงเรียนทั้งวันและใช้แรงมาก จึงซื้อขนมมากขึ้น แต่ควรดูว่ามีร้านอื่นหรือขนมแจกฟรีหรือไม่' },
   { id: 'open', name: 'Open House', demand: 70, reason: 'มีผู้ปกครองและผู้มาเยือนเพิ่มจากนักเรียน ลูกค้ามากขึ้นในช่วงที่มีผู้มาร่วมงานมาก' },
   { id: 'exam', name: 'ช่วงสอบ', demand: 35, reason: 'เวลาพักสั้นและแต่ละชั้นพักไม่ตรงกัน ลูกค้ามีเวลาซื้อน้อยลง' },
   { id: 'rain', name: 'วันฝนตก', demand: 30, reason: 'คนออกมาเดินซื้อของที่ร้านน้อยลง ควรผลิตน้อยกว่าวันปกติ' },
@@ -69,13 +69,41 @@ function presets() {
     ['ผลิตเกิน ' + gap + ' ชิ้น', d + gap],
   ];
 }
+/** Pie chart: sold / left over / customers who missed out. */
+function drawPie(r) {
+  const parts = [
+    { key: 'on', label: 'ขายได้', n: r.sold, fill: COLOR.lime, stroke: '#a9d81f' },
+    { key: 'left', label: 'ผลิตเกิน · เหลือ', n: r.left, fill: COLOR.orange, stroke: COLOR.orange },
+    { key: 'miss', label: 'ผลิตขาด · ลูกค้าไม่ได้ซื้อ', n: r.short, fill: '#f4f4f5', stroke: COLOR.muted, dash: '4 3' },
+  ];
+  const total = parts.reduce((a, p) => a + p.n, 0) || 1;
+  const cx = 100, cy = 100, R = 92;
+  let a0 = -Math.PI / 2, g = '';
+  const pt = (a, rad = R) => [cx + rad * Math.cos(a), cy + rad * Math.sin(a)];
+  parts.filter((p) => p.n > 0).forEach((p) => {
+    const share = p.n / total, a1 = a0 + share * 2 * Math.PI;
+    const attrs = `fill="${p.fill}" stroke="${p.stroke}" stroke-width="1.5"${p.dash ? ` stroke-dasharray="${p.dash}"` : ''}`;
+    if (share >= 0.9999) g += `<circle cx="${cx}" cy="${cy}" r="${R}" ${attrs}/>`;
+    else {
+      const [x0, y0] = pt(a0), [x1, y1] = pt(a1);
+      g += `<path d="M${cx} ${cy}L${x0.toFixed(2)} ${y0.toFixed(2)}A${R} ${R} 0 ${share > 0.5 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}Z" ${attrs} stroke-linejoin="round"/>`;
+    }
+    if (share >= 0.08) {
+      const [tx, ty] = pt((a0 + a1) / 2, share >= 0.9999 ? 0 : R * 0.6);
+      g += `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-size="15" font-weight="800" fill="${p.key === 'left' ? '#fff' : COLOR.ink}">${p.n}</text>`;
+    }
+    a0 = a1;
+  });
+  $('makePie').innerHTML = g;
+  $('makePie').setAttribute('aria-label', parts.map((p) => p.label + ' ' + p.n + ' ชิ้น').join(', '));
+  $('makePieLegend').innerHTML = parts.map((p) => `<li><i class="${p.key}"></i><span>${p.label}</span><b>${p.n} ชิ้น · ${Math.round((p.n / total) * 100)}%</b></li>`).join('');
+}
+
 function drawUnits() {
   const d = day.demand, r = calc(make);
-  $('p3Intro').textContent = day.name + ' คาดว่ามีคนอยากซื้อ ' + d + ' ชิ้น ร้านขายชิ้นละ ' + PRICE + ' บาท ต้นทุนชิ้นละ ' + COST + ' บาท ลองเลื่อนจำนวนที่ผลิต แล้วดูว่าช่องไหนขายได้ ช่องไหนเหลือ และมีลูกค้ากี่คนที่ไม่ได้ซื้อ';
+  $('p3Intro').textContent = day.name + ' คาดว่ามีคนอยากซื้อ ' + d + ' ชิ้น ร้านขายชิ้นละ ' + PRICE + ' บาท ต้นทุนชิ้นละ ' + COST + ' บาท ลองเลื่อนจำนวนที่ผลิต แล้วดูในวงกลมว่าส่วนไหนขายได้ ส่วนไหนเหลือ และมีลูกค้ากี่คนที่ไม่ได้ซื้อ';
   $('make3Value').textContent = make;
-  const n = Math.max(make, d);
-  $('makeUnits').style.gridTemplateColumns = `repeat(${n > 60 ? 20 : 10}, minmax(0, 1fr))`;
-  $('makeUnits').innerHTML = Array.from({ length: n }, (_, i) => `<span class="${i < r.sold ? 'on' : i < make ? 'left' : 'miss'}"></span>`).join('');
+  drawPie(r);
   const head = $('makeHeadline'), eff = $('makeEffect');
   if (r.short) {
     head.textContent = 'ผลิตขาด ' + r.short + ' ชิ้น';
@@ -93,7 +121,7 @@ function drawUnits() {
   $('lossLive').textContent = r.short
     ? 'ลูกค้า ' + r.short + ' คนไม่ได้ซื้อ\nกำไรที่สูญเสีย = ' + r.short + ' × (' + PRICE + ' − ' + COST + ') = ' + fmt(r.missed) + ' บาท'
     : r.left
-      ? 'เหลือแซนด์วิช ' + r.left + ' ชิ้นที่ขายไม่ได้\nความเสียหาย = ' + r.left + ' × ' + COST + ' = ' + fmt(r.waste) + ' บาท'
+      ? 'เหลือคุกกี้ ' + r.left + ' ชิ้นที่ขายไม่ได้\nความเสียหาย = ' + r.left + ' × ' + COST + ' = ' + fmt(r.waste) + ' บาท'
       : 'ขายได้ครบ ' + d + ' ชิ้น ไม่มีสินค้าเหลือและไม่มีลูกค้าที่ไม่ได้ซื้อ';
   $('makePresets').innerHTML = presets().map(([label, v]) => `<button type="button" data-make="${v}" aria-pressed="${v === make}">${label}</button>`).join('');
 }
@@ -110,11 +138,11 @@ function drawCases() {
   const lo = calc(d - gap), hi = calc(d + gap), best = calc(d);
   $('p4Intro').textContent = day.name + ' มีคนอยากซื้อ ' + d + ' ชิ้น ลองเปรียบเทียบการผลิต 3 แบบ (ขายชิ้นละ ' + PRICE + ' บาท ต้นทุนชิ้นละ ' + COST + ' บาท)';
   $('cases').innerHTML = [
-    ['ผลิต ' + (d - gap) + ' ชิ้น (ผลิตขาด)', 'ขายหมด ' + lo.sold + ' ชิ้น แต่ลูกค้าอีก ' + lo.short + ' คนไม่ได้ซื้อ', lo.sold + ' × 30 − ' + (d - gap) + ' × 15 = ' + fmt(lo.profit) + ' บาท', ''],
-    ['ผลิต ' + (d + gap) + ' ชิ้น (ผลิตเกิน)', 'ขายได้ ' + hi.sold + ' ชิ้น เหลือ ' + hi.left + ' ชิ้น', hi.sold + ' × 30 − ' + (d + gap) + ' × 15 = ' + fmt(hi.profit) + ' บาท', ''],
-    ['ผลิต ' + d + ' ชิ้น (พอดี)', 'ขายได้ครบทุกชิ้น', best.sold + ' × 30 − ' + d + ' × 15 = ' + fmt(best.profit) + ' บาท', 'hot'],
+    ['ผลิต ' + (d - gap) + ' ชิ้น (ผลิตขาด)', 'ขายหมด ' + lo.sold + ' ชิ้น แต่ลูกค้าอีก ' + lo.short + ' คนไม่ได้ซื้อ', lo.sold + ' × ' + PRICE + ' − ' + (d - gap) + ' × ' + COST + ' = ' + fmt(lo.profit) + ' บาท', ''],
+    ['ผลิต ' + (d + gap) + ' ชิ้น (ผลิตเกิน)', 'ขายได้ ' + hi.sold + ' ชิ้น เหลือ ' + hi.left + ' ชิ้น', hi.sold + ' × ' + PRICE + ' − ' + (d + gap) + ' × ' + COST + ' = ' + fmt(hi.profit) + ' บาท', ''],
+    ['ผลิต ' + d + ' ชิ้น (พอดี)', 'ขายได้ครบทุกชิ้น', best.sold + ' × ' + PRICE + ' − ' + d + ' × ' + COST + ' = ' + fmt(best.profit) + ' บาท', 'hot'],
   ].map((c, i) => `<li><span class="n">${i + 1}</span><p><b>${c[0]}</b><br>${c[1]}<br><span class="calc ${c[3]}">${c[2]}</span></p></li>`).join('') +
-    `<li><span class="n">=</span><p>ผลิตขาดและผลิตเกินในตัวอย่างนี้ได้กำไร ${fmt(lo.profit)} บาทเท่ากัน แต่เสียไปคนละแบบ แบบแรกเสียโอกาสขาย แบบที่สองเสียเงินค่าวัตถุดิบ</p></li>`;
+    `<li><span class="n">=</span><p>ผลิตขาดได้กำไร ${fmt(lo.profit)} บาท ผลิตเกินได้ ${fmt(hi.profit)} บาท ทั้งสองแบบได้น้อยกว่าผลิตพอดี แต่เสียไปคนละแบบ แบบแรกเสียโอกาสขาย แบบที่สองเสียเงินค่าวัตถุดิบ</p></li>`;
 }
 
 function drawProfit() {
@@ -149,7 +177,7 @@ function drawChain() {
   const rows = [
     ['สถานการณ์ที่เลือก', day.name],
     ['ความต้องการซื้อ', d + ' ชิ้น'],
-    ['จำนวนที่ผลิต (หน้า 3–4)', make + ' ชิ้น'],
+    ['จำนวนที่ผลิต', make + ' ชิ้น'],
     [r.short ? 'ผลิตขาด · กำไรที่สูญเสีย' : r.left ? 'ผลิตเกิน · ความเสียหาย' : 'ผลิตพอดี · ความเสียหาย', fmt(r.short ? r.missed : r.waste) + ' บาท'],
     ['กำไร (ยังไม่หักต้นทุนคงที่)', fmt(r.profit) + ' บาท'],
   ];

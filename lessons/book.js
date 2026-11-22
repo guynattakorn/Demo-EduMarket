@@ -74,13 +74,40 @@ const Book = (() => {
   const seen = new Set([0]);
   let index = 0;
 
+  // Pagination capsule: the number strip slides so the current page sits
+  // under a fixed ring in the middle; numbers outside the window are clipped.
+  const win = document.createElement('div');
+  win.className = 'pager-window';
+  const ring = document.createElement('span');
+  ring.className = 'pager-ring';
+  ring.setAttribute('aria-hidden', 'true');
+  const track = document.createElement('div');
+  track.className = 'pager-track';
+  track.setAttribute('role', 'group');
+  track.setAttribute('aria-label', 'หน้าในบทเรียน');
+  win.append(ring, track);
+  next.parentNode.insertBefore(win, next);
   pages.forEach((p, i) => {
     const b = document.createElement('button');
     b.type = 'button';
+    b.textContent = i + 1;
     b.setAttribute('aria-label', 'หน้า ' + (i + 1) + ' ' + p.dataset.title);
     b.addEventListener('click', () => go(i));
-    dots.appendChild(b);
+    track.appendChild(b);
+    // Top progress bar (one segment per page)
+    const d = document.createElement('button');
+    d.type = 'button';
+    d.setAttribute('aria-label', 'หน้า ' + (i + 1) + ' ' + p.dataset.title);
+    d.addEventListener('click', () => go(i));
+    dots.appendChild(d);
   });
+  function centerTrack() {
+    const b = track.children[index];
+    if (!b) return;
+    const x = win.clientWidth / 2 - (b.offsetLeft + b.offsetWidth / 2);
+    track.style.transform = `translateX(${x}px)`;
+  }
+  new ResizeObserver(centerTrack).observe(win);
 
   function render(dir) {
     pages.forEach((p, i) => {
@@ -88,11 +115,13 @@ const Book = (() => {
       p.classList.toggle('from-left', i === index && dir < 0);
       p.setAttribute('aria-hidden', String(i !== index));
     });
-    [...dots.children].forEach((b, i) => {
+    [...track.children, ...dots.children].forEach((b, i) => {
+      i %= pages.length;
       b.classList.toggle('seen', seen.has(i));
       if (i === index) b.setAttribute('aria-current', 'step');
       else b.removeAttribute('aria-current');
     });
+    centerTrack();
     where.innerHTML = `<b>${pages[index].dataset.title}</b><span>หน้า ${index + 1} / ${pages.length}</span>`;
     prev.disabled = index === 0;
     const last = index === pages.length - 1;

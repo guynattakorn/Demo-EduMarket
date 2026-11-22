@@ -19,13 +19,13 @@
     <div class="card">
       <span class="eyebrow">หัวข้อที่ 2 · Stock การวางแผนการผลิตและสต็อก</span>
       <div class="page-head">
-        <h2>แต่ละวัน คนอยากซื้อไม่เท่ากัน</h2>
-        <p>ร้านแซนด์วิชขายชิ้นละ 30 บาท ต้นทุนชิ้นละ 15 บาท จำนวนคนที่อยากซื้อ (ความต้องการซื้อ หรือ Demand) ขึ้นอยู่กับสถานการณ์และช่วงเวลาของวันนั้น ร้านจึงไม่ควรผลิตจำนวนเท่ากันทุกวัน</p>
+        <h2>ในแต่ละวันคนอยากซื้อไม่เท่ากัน</h2>
+        <p>ยกตัวอย่างร้านขายคุกกี้ ขายชิ้นละ 20 บาท ต้นทุนชิ้นละ 6 บาท จำนวนคนที่อยากซื้อ (ความต้องการซื้อ หรือ Demand) ขึ้นอยู่กับสถานการณ์และช่วงเวลาของวันนั้น ร้านจึงไม่ควรผลิตจำนวนเท่ากันทุกวัน</p>
       </div>
     </div>
     <div class="card figure">
       <div class="figure-head">
-        <h3>ความต้องการซื้อแซนด์วิช (ชิ้น)</h3>
+        <h3>ตัวอย่างความต้องการซื้อคุกกี้ในแต่ละวัน (ชิ้น)</h3>
         <strong id="dayHeadline"></strong>
       </div>
       <div class="choices" id="days" role="group" aria-label="เลือกสถานการณ์"></div>
@@ -35,7 +35,7 @@
     <div class="eq-box">
       <span>หลักคิด</span>
       <p class="eq">จำนวนที่ควรผลิต ≈ ความต้องการซื้อของวันที่จะขาย
-        <small>ไม่ใช่ยอดของวันอื่น วันที่เลือกไว้ตรงนี้จะใช้ต่อในหน้า 3–5</small></p>
+        <small>ไม่ใช่ยอดของวันอื่น</small></p>
     </div>
   </section>
 
@@ -52,7 +52,7 @@
       <article class="tile">
         <span class="tag">1 · บริบทของวัน</span>
         <h3>วันนั้นมีอะไรเกิดขึ้น</h3>
-        <p>กีฬาสี Open House ช่วงสอบ หรือฝนตก ทำให้จำนวนคนและเวลาพักเปลี่ยนไป (ดูหน้า 1)</p>
+        <p>กีฬาสี Open House ช่วงสอบ หรือฝนตก ทำให้จำนวนคนและเวลาพักเปลี่ยนไป</p>
       </article>
       <article class="tile">
         <span class="tag">2 · คำสั่งซื้อล่วงหน้า</span>
@@ -83,7 +83,7 @@
     <div class="card">
       <div class="page-head">
         <span class="kicker">จุดการผลิตเกินและการผลิตขาด</span>
-        <h2>1 ช่อง = แซนด์วิช 1 ชิ้น</h2>
+        <h2>ผลิตแล้ว ขายได้ เหลือ หรือขาด</h2>
         <p id="p3Intro"></p>
       </div>
     </div>
@@ -92,8 +92,10 @@
         <h3 id="makeHeadline"></h3>
         <strong id="makeEffect"></strong>
       </div>
-      <div class="units big" id="makeUnits" aria-hidden="true"></div>
-      <div class="unit-legend"><span><i class="on"></i>ขายได้</span><span><i class="left"></i>ผลิตเกิน · เหลือ</span><span><i class="miss"></i>ผลิตขาด · ลูกค้าไม่ได้ซื้อ</span></div>
+      <div class="pie-wrap">
+        <svg class="pie" id="makePie" viewBox="0 0 200 200" role="img"></svg>
+        <ul class="pie-legend" id="makePieLegend"></ul>
+      </div>
       <div class="choices" id="makePresets" role="group" aria-label="ตัวอย่างจำนวนที่ผลิต"></div>
       <div class="sliders">
         <label class="slider">จำนวนที่ผลิต <b><span id="make3Value"></span> ชิ้น</b>
@@ -144,6 +146,24 @@
           <input id="make4" type="range" min="0" max="100" step="1" value="50"></label>
       </div>
     </div>
+    <div class="card">
+      <h3 style="font-size:16px;margin-bottom:10px">ทำไมเส้นสองฝั่งชันไม่เท่ากัน</h3>
+      <div class="tiles two">
+        <article class="tile">
+          <span class="tag dark">ฝั่งซ้าย · ผลิตขาด</span>
+          <h3>ขาดไป 1 ชิ้น เสียกำไร 14 บาท</h3>
+          <p>ลูกค้ามาแต่ไม่มีของขาย ร้านไม่ได้เสียเงินออกจากกระเป๋า แต่เสียกำไรที่ควรได้จากชิ้นนั้น เรียกว่า<b>ค่าเสียโอกาส</b> เท่ากับราคาขายลบต้นทุน</p>
+          <span class="calc">20 − 6 = 14 บาท/ชิ้น</span>
+        </article>
+        <article class="tile">
+          <span class="tag orange">ฝั่งขวา · ผลิตเกิน</span>
+          <h3>เกินไป 1 ชิ้น เสียเงิน 6 บาท</h3>
+          <p>คุกกี้ที่เหลือขายไม่ได้ ร้านเสียเฉพาะค่าวัตถุดิบที่จ่ายไปแล้วของชิ้นนั้น เท่ากับต้นทุนต่อชิ้น</p>
+          <span class="calc">6 บาท/ชิ้น</span>
+        </article>
+      </div>
+      <p class="say" style="margin-top:12px">ขาด 1 ชิ้นเสีย 14 บาท แต่เกิน 1 ชิ้นเสียแค่ 6 บาท เส้นฝั่งซ้ายจึงชันกว่าฝั่งขวา ถ้าไม่แน่ใจว่าจะขายได้เท่าไร การผลิตเผื่อไว้เล็กน้อยจึงเสียหายน้อยกว่าการผลิตไม่พอ</p>
+    </div>
   </section>
 
   <!-- 5 -->
@@ -158,7 +178,7 @@
       <ol class="walk">
         <li><span class="n">1</span><p><b>เริ่มจากคำสั่งซื้อล่วงหน้า</b><br>เป็นยอดที่ขายได้แน่นอน</p></li>
         <li><span class="n">2</span><p><b>ปรับตามสถานการณ์ของวัน</b><br>กีฬาสี Open House ผลิตเพิ่ม · ช่วงสอบ ฝนตก ผลิตน้อยลง</p></li>
-        <li><span class="n">3</span><p><b>เผื่อเพิ่มประมาณ 10–20%</b><br>เพราะยอดที่ประเมินอาจคลาดเคลื่อน เช่น ประเมินไว้ 50 ชิ้น ผลิต 55–60 ชิ้น ไม่ควรเผื่อเป็นสองเท่า</p></li>
+        <li><span class="n">3</span><p><b>ผลิตเผื่อเล็กน้อยจากยอดขายคาดการณ์</b><br>เพราะการยอมเสียหายจากการผลิตเกินดีกว่าการเสียหายจากค่าเสียโอกาสเมื่อผลิตขาด</p></li>
       </ol>
     </div>
     <div class="card chain" id="chain"></div>

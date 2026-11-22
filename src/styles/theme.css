@@ -227,8 +227,8 @@ body::before {
 }
 
 /* ==========================================================================
-   Frosted surfaces — cards and bars blend with the grass background
-   instead of sitting on it as hard white boxes.
+   Solid surfaces — opaque white cards and bars with one neutral border.
+   No blur or tinted glow: the grass stays in the page gutters only.
    ========================================================================== */
 .pcard,
 .card,
@@ -251,11 +251,9 @@ body::before {
 .timeline-card,
 .empty,
 .cart-shop {
-  background: rgba(255, 255, 255, 0.72) !important;
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 4px 18px rgba(46, 70, 20, 0.07) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  backdrop-filter: blur(12px) saturate(140%);
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
 }
 /* Product photos stay on clean white */
 .pcard .pcard-media,
@@ -266,22 +264,24 @@ body::before {
 .market-header,
 .bottom-nav,
 .side-nav {
-  background: rgba(255, 255, 255, 0.8) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  backdrop-filter: blur(16px) saturate(150%);
+  background: var(--surface) !important;
 }
 .mobile-topbar,
 .market-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 .bottom-nav {
-  border-top: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.side-nav {
+  border-right: 1px solid var(--border) !important;
 }
 .market-search {
-  background: rgba(244, 244, 245, 0.8);
+  background: var(--surface-2);
 }
 .pill-row button:not(.selected) {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 /* ==========================================================================
@@ -294,11 +294,8 @@ body::before {
   margin: 0 0 12px;
   padding: 10px 12px;
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 18px rgba(46, 70, 20, 0.07);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  backdrop-filter: blur(12px) saturate(140%);
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 .lesson-head .lesson-icon {
   width: 36px;
@@ -308,8 +305,21 @@ body::before {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: var(--primary);
-  color: var(--primary-ink);
+  background: var(--surface-2);
+  color: var(--ink);
+}
+/* Lesson cards: plain neutral icon tile instead of a tinted badge */
+.lesson-card .lesson-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+/* Popups: plain dark scrim, no blur behind */
+.modal::backdrop {
+  background: rgba(9, 9, 11, 0.5);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .lesson-head-text {
   min-width: 0;
