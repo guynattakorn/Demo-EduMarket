@@ -4347,5 +4347,6 @@
   "feedback": [],
   "promotions": [],
   "chatAppointments": [],
-  "announcements": []
+  "announcements": [],
+  "marketShopsV1": true
 }
