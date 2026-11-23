@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EduMarket Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime: #c6fa31;
+    --ink: #09090b;
+    --muted: #52525b;
+    --bg: #eef2e4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #d4d4d8; }
+  body { font-family: "Noto Sans Thai", system-ui, sans-serif; color: var(--ink); }
+
+  .board {
+    width: 1600px;
+    height: 1180px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(198, 250, 49, 0.55), transparent 70%),
+      radial-gradient(700px 420px at -5% 110%, rgba(198, 250, 49, 0.35), transparent 70%),
+      var(--bg);
+    padding: 64px 80px 0;
+  }
+  .board + .board { margin-top: 0; }
+  body.one .board { display: none; }
+  body.one .board.show { display: block; }
+
+  .head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .logo {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--lime);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; letter-spacing: -0.5px; transform: rotate(-4deg);
+  }
+  .brand b { font-size: 26px; font-weight: 800; }
+  .brand b span { font-weight: 500; }
+  h1 { margin: 0; font-size: 46px; line-height: 1.2; font-weight: 800; }
+  h1 mark { background: linear-gradient(transparent 60%, var(--lime) 60%); color: inherit; padding: 0 4px; }
+  .sub { margin: 8px 0 0; font-size: 20px; color: var(--muted); }
+  .pill {
+    flex-shrink: 0; padding: 10px 20px; border-radius: 999px; background: var(--ink); color: #fff;
+    font-size: 16px; font-weight: 700;
+  }
+
+  .row {
+    position: absolute;
+    left: 0; right: 0; bottom: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 56px;
+  }
+  .row.four { gap: 40px; }
+  figure { margin: 0; display: grid; gap: 14px; justify-items: center; }
+  figcaption { text-align: center; width: 300px; }
+  figcaption b { display: block; font-size: 18px; font-weight: 800; }
+  figcaption span { display: block; font-size: 15px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+  figcaption i {
+    font-style: normal; display: inline-block; font-size: 12px; font-weight: 700;
+    background: var(--lime); padding: 1px 10px; border-radius: 999px; margin-bottom: 6px;
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 324px;
+    padding: 12px;
+    border-radius: 54px;
+    background: #111113;
+    box-shadow:
+      0 0 0 2px #3f3f46 inset,
+      0 30px 60px -18px rgba(20, 40, 0, 0.45),
+      0 10px 24px rgba(0, 0, 0, 0.18);
+    position: relative;
+  }
+  .screen {
+    border-radius: 42px;
+    overflow: hidden;
+    background: #fafaf7;
+    position: relative;
+  }
+  .status {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 26px 0 30px;
+    font-size: 13px;
+    font-weight: 700;
+    background: #fafaf9;
+  }
+  .status svg { display: block; }
+  .island {
+    position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+    width: 92px; height: 26px; border-radius: 20px; background: #000;
+  }
+  .screen img { display: block; width: 300px; height: auto; }
+  .lift { transform: translateY(-36px); }
+</style>
+</head>
+<body>
+
+<template id="phone">
+  <div class="phone">
+    <div class="screen">
+      <div class="status">
+        <span>9:41</span>
+        <svg width="58" height="12" viewBox="0 0 58 12" aria-hidden="true">
+          <rect x="0" y="7" width="3" height="5" rx="1" fill="#09090b"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#09090b"/>
+          <rect x="10" y="3" width="3" height="9" rx="1" fill="#09090b"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#09090b"/>
+          <path d="M24 5.2a8 8 0 0 1 11 0M26.2 7.6a5 5 0 0 1 6.6 0M28.4 10a2 2 0 0 1 2.2 0" stroke="#09090b" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <rect x="40" y="1.5" width="15" height="9" rx="2.5" fill="none" stroke="#09090b" stroke-width="1.2"/><rect x="42" y="3.5" width="10" height="5" rx="1" fill="#09090b"/>
+          <rect x="56" y="4.5" width="1.5" height="3" rx=".7" fill="#09090b"/>
+        </svg>
+      </div>
+      <div class="island"></div>
+      <img alt="">
+    </div>
+  </div>
+</template>
+
+<section class="board" id="b1">
+  <div class="head">
+    <div>
+      <div class="brand"><span class="logo">em</span><b>edu<span>market</span></b></div>
+      <h1>ตลาดนัดของห้องเรียน <mark>ที่ได้ลองขายจริง</mark></h1>
+      <p class="sub">นักเรียนเปิดร้าน ตั้งราคา รับคำสั่งซื้อ และส่งมอบสินค้าในโรงเรียน</p>
+    </div>
+    <span class="pill">แอปบนมือถือ</span>
+  </div>
+  <div class="row">
+    <figure data-src="screens/01-market.jpg"><figcaption><i>ตลาดนัด</i><b>เลือกซื้อจากร้านของเพื่อน</b><span>ค้นหา แยกหมวด และเห็นจำนวนคงเหลือทันที</span></figcaption></figure>
+    <figure data-src="screens/02-product.jpg" class="lift"><figcaption><i>รายละเอียดสินค้า</i><b>รู้ว่าได้ของเมื่อไร</b><span>บอกวันพร้อมส่งมอบ และจุดนัดรับในโรงเรียน</span></figcaption></figure>
+    <figure data-src="screens/03-shop.jpg"><figcaption><i>ร้านของฉัน</i><b>บริหารร้านร่วมกับเพื่อน</b><span>สมาชิก คำสั่งซื้อ สินค้า และยอดขาย</span></figcaption></figure>
+  </div>
+</section>
+
+<section class="board" id="b2">
+  <div class="head">
+    <div>
+      <div class="brand"><span class="logo">em</span><b>edu<span>market</span></b></div>
+      <h1>บทเรียนแบบ <mark>หนังสือเปิดทีละหน้า</mark></h1>
+      <p class="sub">2 หัวข้อหลัก สูตรอยู่หน้าเดียวกับเนื้อหา กราฟปรับด้วยแถบเลื่อน</p>
+    </div>
+    <span class="pill">กำไรและต้นทุน · Stock</span>
+  </div>
+  <div class="row four">
+    <figure data-src="screens/04-cost-steps.jpg"><figcaption><i>กำไรและต้นทุน · หน้า 4</i><b>ไล่ตัวเลขทีละขั้น</b><span>200 ÷ 40 → 40 − 8 → 200 ÷ 32</span></figcaption></figure>
+    <figure data-src="screens/05-cost-chart.jpg" class="lift"><figcaption><i>กำไรและต้นทุน · หน้า 4</i><b>ของเสียกับต้นทุนต่อชิ้น</b><span>แถบเลื่อนพร้อมค่าสูงสุดบนกราฟ</span></figcaption></figure>
+    <figure data-src="screens/06-stock-units.jpg"><figcaption><i>Stock · หน้า 3</i><b>ผลิตเกินหรือผลิตขาด</b><span>1 ช่อง = 1 ชิ้น เห็นภาพได้ทันที</span></figcaption></figure>
+    <figure data-src="screens/07-stock-profit.jpg" class="lift"><figcaption><i>Stock · หน้า 4</i><b>ผลิตกี่ชิ้นกำไรสูงสุด</b><span>กำไรสูงสุดเมื่อผลิตพอดีกับความต้องการ</span></figcaption></figure>
+  </div>
+</section>
+
+<script>
+  const tpl = document.getElementById('phone');
+  document.querySelectorAll('figure[data-src]').forEach((fig) => {
+    const phone = tpl.content.firstElementChild.cloneNode(true);
+    phone.querySelector('img').src = fig.dataset.src;
+    fig.prepend(phone);
+  });
+  const only = new URLSearchParams(location.search).get('b');
+  if (only) {
+    document.body.classList.add('one');
+    document.getElementById('b' + only)?.classList.add('show');
+  }
+</script>
+</body>
+</html>
