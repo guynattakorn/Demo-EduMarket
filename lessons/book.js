@@ -146,19 +146,6 @@ const Book = (() => {
     if (e.key === 'ArrowRight') go(index + 1);
     if (e.key === 'ArrowLeft') go(index - 1);
   });
-  // Swipe left / right on the page text (not on sliders or charts).
-  let sx = null, sy = 0;
-  document.addEventListener('touchstart', (e) => {
-    sx = e.target.closest('input, .figure') ? null : e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', (e) => {
-    if (sx === null) return;
-    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6) go(index + (dx < 0 ? 1 : -1));
-    sx = null;
-  });
-
   return {
     onShow(fn) {
       listeners.push(fn);

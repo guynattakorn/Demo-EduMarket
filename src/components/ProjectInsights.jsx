@@ -561,12 +561,12 @@ function ProjectView({ shop, source, setSource }) {
                         <span>{p.title}</span>
                         <i className="pi-mixbar" style={{ width: (productRows[0].m.revenue ? (m.revenue / productRows[0].m.revenue) * 100 : 0) + "%" }} />
                       </th>
-                      <td>{num(m.units)}</td>
-                      <td>{money(p.price)}</td>
-                      <td>{num(report(data, n, p.id).before.units)}</td>
-                      <td>{num(p.stock)}</td>
-                      <td>{money(m.revenue)}</td>
-                      <td className={m.profit < 0 ? "neg" : ""}>{money(m.profit)}</td>
+                      <td data-label="ขาย (ชิ้น)">{num(m.units)}</td>
+                      <td data-label="ราคา/ชิ้น">{money(p.price)}</td>
+                      <td data-label="ช่วงก่อน (ชิ้น)">{num(report(data, n, p.id).before.units)}</td>
+                      <td data-label="สต็อกเหลือ">{num(p.stock)}</td>
+                      <td data-label="ยอดขาย">{money(m.revenue)}</td>
+                      <td data-label="กำไร" className={m.profit < 0 ? "neg" : ""}>{money(m.profit)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -778,10 +778,10 @@ function SchoolView({ onProject }) {
                   sorted.map((p) => (
                     <tr key={p.id}>
                       <th scope="row">{p.title}</th>
-                      <td>{money(p.sales)}</td>
-                      <td className={trend(p)}>{growthLabel(p)}</td>
-                      <td>{num(p.units)}</td>
-                      <td>
+                      <td data-label="ยอดขาย">{money(p.sales)}</td>
+                      <td data-label="เติบโต" className={trend(p)}>{growthLabel(p)}</td>
+                      <td data-label="ชิ้น">{num(p.units)}</td>
+                      <td data-label="แนวโน้ม">
                         <Spark points={p.points} down={p.sales < p.before} />
                       </td>
                     </tr>

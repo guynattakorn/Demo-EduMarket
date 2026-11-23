@@ -14,7 +14,7 @@ export function ShopInsights({ shop: t }) {
       <ProjectInsights shop={t} />
       <section className="card decision-card">
         <SectionTitle title="บันทึกการตัดสินใจ" />
-        <div className="table-scroll">
+        <div className="table-scroll pi-stack-sm">
           <table>
             <thead>
               <tr>
@@ -28,20 +28,20 @@ export function ShopInsights({ shop: t }) {
             <tbody>
               {u.map((p) => (
                 <tr key={p.id}>
-                  <td>
+                  <td data-label="วันที่ / สินค้า">
                     <small>{Pt(p.date)}</small>
                     <strong>{e.products.find((r) => r.id === p.productId)?.name || "สินค้า"}</strong>
                   </td>
-                  <td>{p.type}</td>
-                  <td>
+                  <td data-label="ปรับอะไร">{p.type}</td>
+                  <td data-label="ก่อน → หลัง">
                     <b>
                       {p.before}
                       {" → "}
                       {p.after}
                     </b>
                   </td>
-                  <td>{p.reason}</td>
-                  <td>{e.users.find((r) => r.id === p.actor)?.name || p.actor}</td>
+                  <td data-label="เหตุผล">{p.reason}</td>
+                  <td data-label="ผู้ปรับ">{e.users.find((r) => r.id === p.actor)?.name || p.actor}</td>
                 </tr>
               ))}
             </tbody>

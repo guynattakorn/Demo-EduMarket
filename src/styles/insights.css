@@ -437,3 +437,65 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Phone width: wide tables become stacked cards (label left, value right) */
+@media (max-width: 600px) {
+  .pi-sales thead,
+  .pi-board thead,
+  .pi-stack-sm thead {
+    display: none;
+  }
+  .pi-sales,
+  .pi-board,
+  .pi-stack-sm table,
+  .pi-sales tbody,
+  .pi-board tbody,
+  .pi-stack-sm tbody {
+    display: block;
+    width: 100%;
+  }
+  .pi-sales tr,
+  .pi-board tr,
+  .pi-stack-sm tr {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pi-sales tbody th,
+  .pi-board tbody th {
+    display: block;
+    border: 0;
+    padding: 0 0 6px;
+    font-weight: 700;
+    min-width: 0;
+  }
+  .pi-sales td,
+  .pi-board td,
+  .pi-stack-sm td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border: 0;
+    padding: 3px 0;
+    text-align: right;
+  }
+  .pi-sales td::before,
+  .pi-board td::before,
+  .pi-stack-sm td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    text-align: left;
+    flex-shrink: 0;
+  }
+  .pi-stack-sm td > * {
+    min-width: 0;
+  }
+  .pi-stack-sm td small,
+  .pi-stack-sm td strong {
+    display: block;
+  }
+  .pi-scroll,
+  .pi-stack-sm {
+    overflow: visible;
+  }
+}

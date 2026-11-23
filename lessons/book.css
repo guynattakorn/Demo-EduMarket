@@ -598,3 +598,22 @@
 .pie-legend i.on { background: var(--lime); border-color: #a9d81f; }
 .pie-legend i.left { background: var(--orange); border-color: var(--orange); }
 .pie-legend i.miss { background: #f4f4f5; border: 1.5px dashed var(--muted); }
+
+/* ---------- Phone width: nothing wider than the screen ---------- */
+main.lesson {
+  grid-template-columns: minmax(0, 1fr);
+}
+.book-nav,
+.page,
+.page > * {
+  min-width: 0;
+}
+.pager-window {
+  flex: 1 1 0;
+  min-width: 0;
+}
+/* Choice buttons wrap to a new line instead of a hidden side scroll */
+.choices {
+  flex-wrap: wrap;
+  overflow: visible;
+}
