@@ -2,6 +2,9 @@
 // แหล่งโค้ดจริงของ app.js — แก้ไขไฟล์ใน src/ แล้วรัน `npm run build`
 import { ls, vl } from "../config/constants.js";
 import { ct } from "../utils/format.js";
+import { addMarketExtras } from "./market-shops.js";
+
+export { addMarketExtras };
 
 /** ข้อมูลเริ่มต้น (seed) ของทั้งระบบ — ใช้ทั้งฝั่งหน้าเว็บและ db/seed-data.js (สร้างจากไฟล์นี้ตอน npm run build) */
 export function Mn() {
@@ -241,7 +244,7 @@ export function Mn() {
       date: ct(),
     },
   ]);
-  return {
+  const state = {
     schema: 2,
     users: t,
     classes: [
@@ -364,4 +367,5 @@ export function Mn() {
     ],
     feedback: [],
   };
+  return addMarketExtras(state);
 }

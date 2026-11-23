@@ -1,0 +1,138 @@
+// data/market-shops.js
+// แหล่งโค้ดจริงของ app.js — แก้ไขไฟล์ใน src/ แล้วรัน `npm run build`
+// ร้านตัวอย่างเพิ่มเติมในตลาดนัด (8 ร้าน 24 สินค้า) พร้อมรีวิวและออเดอร์ที่ส่งมอบแล้ว
+// รูปสินค้าอยู่ใน assets/products (ที่มาใน CREDITS.md)
+
+const img = (file) => "/assets/products/" + file + ".jpg";
+
+const STUDENTS = [
+  { id: "student5", name: "น้ำฝน", classId: "c2" },
+  { id: "student6", name: "กานต์", classId: "c2" },
+  { id: "student7", name: "แพรว", classId: "c1" },
+  { id: "student8", name: "ภีม", classId: "c2" },
+  { id: "student9", name: "ข้าวหอม", classId: "c1" },
+  { id: "student10", name: "นิว", classId: "c2" },
+  { id: "student11", name: "เบลล่า", classId: "c1" },
+  { id: "student12", name: "โจ้", classId: "c2" },
+];
+
+// [shopId, owner, partner, name, tagline, color, booth, hours, products]
+// product: [id, name, price, cost, stock, category, image, description, leadDays, views, wishBase]
+const SHOPS = [
+  ["s4", "student5", "student6", "ชาเย็นหน้าเสาธง", "เครื่องดื่มเย็น ๆ ช่วงพัก", "sky", "ศาลาหน้าเสาธง", "พักเช้า 10:20–10:40 น.", [
+    ["p101", "ชานมไข่มุก หวานน้อย", 35, 14, 30, "อาหาร & เครื่องดื่ม", "bubble-tea", "ชานมชงสดทุกเช้า ไข่มุกต้มใหม่ เลือกความหวานได้", 0, 84, 12],
+    ["p102", "กาแฟเย็น นมสด", 35, 15, 20, "อาหาร & เครื่องดื่ม", "iced-coffee", "กาแฟคั่วกลาง นมสดเต็มแก้ว", 0, 61, 7],
+    ["p103", "มะนาวโซดา", 25, 8, 25, "อาหาร & เครื่องดื่ม", "lemon-soda", "มะนาวคั้นสด โซดาซ่า ๆ ดับร้อน", 0, 47, 5],
+  ]],
+  ["s5", "student7", "student9", "อบอุ่นเบเกอรี่", "ขนมอบใหม่ทุกเช้าวันจันทร์–ศุกร์", "peach", "โรงอาหารกลาง", "พักเช้า 10:20–10:40 น.", [
+    ["p104", "ครัวซองต์เนยสด", 30, 13, 15, "อาหาร & เครื่องดื่ม", "croissant", "อบเช้าวันนี้ กรอบนอกนุ่มใน", 0, 72, 10],
+    ["p105", "คุกกี้ช็อกชิป 3 ชิ้น", 25, 9, 24, "อาหาร & เครื่องดื่ม", "cookies", "ช็อกโกแลตชิปเต็มคำ ถุงละ 3 ชิ้น", 0, 66, 9],
+    ["p106", "มัฟฟินบลูเบอร์รี่", 28, 11, 12, "อาหาร & เครื่องดื่ม", "muffin", "บลูเบอร์รี่สดในเนื้อมัฟฟิน สั่งล่วงหน้า 1 วัน", 1, 38, 4],
+  ]],
+  ["s6", "student8", "student10", "ผลไม้เย็นใจ", "ผลไม้สดหั่นพร้อมทาน", "lime", "ใต้ตึกเรียน 3", "พักเที่ยง 12:00–13:00 น.", [
+    ["p107", "แตงโมหั่นเย็น", 20, 7, 20, "อาหาร & เครื่องดื่ม", "watermelon", "แตงโมหวานกรอบ แช่เย็นจัด", 0, 53, 6],
+    ["p108", "ข้าวเหนียวมะม่วง", 45, 22, 10, "อาหาร & เครื่องดื่ม", "mango-sticky-rice", "มะม่วงน้ำดอกไม้ ข้าวเหนียวมูนกะทิ", 1, 91, 15],
+    ["p109", "ผลไม้รวมถ้วย", 30, 12, 18, "อาหาร & เครื่องดื่ม", "fruit-cup", "ผลไม้ตามฤดูกาล 5 อย่างในถ้วยเดียว", 0, 44, 5],
+  ]],
+  ["s7", "student6", "student12", "ข้าวกล่องพักเที่ยง", "อิ่มท้อง ราคานักเรียน", "yellow", "โรงอาหารกลาง", "พักเที่ยง 12:00–13:00 น.", [
+    ["p110", "ข้าวผัดไข่ดาว", 40, 18, 20, "อาหาร & เครื่องดื่ม", "fried-rice-egg", "ข้าวผัดหอมกระทะ ไข่ดาวกรอบ", 0, 77, 8],
+    ["p111", "ข้าวผัดหน้าไข่เจียว", 40, 18, 15, "อาหาร & เครื่องดื่ม", "omelette-rice", "ไข่เจียวฟูหนานุ่มบนข้าวผัด", 0, 58, 6],
+    ["p112", "ข้าวผัดต้นหอม", 35, 15, 15, "อาหาร & เครื่องดื่ม", "fried-rice", "ข้าวผัดสูตรบ้าน โรยต้นหอม", 0, 31, 3],
+  ]],
+  ["s8", "student11", "student5", "ไหมพรมยิ้ม", "ของถักมือ ชิ้นเดียวในโรงเรียน", "pink", "หน้าห้องพักครู", "หลังเลิกเรียน 15:30–16:30 น.", [
+    ["p113", "ตะกร้าโครเชต์ใส่ของ", 89, 38, 6, "แฮนด์เมด", "crochet-basket", "ถักจากเชือกผ้าคอตตอน ใส่ปากกาหรือของจุกจิก", 3, 49, 11],
+    ["p114", "ยางรัดผมผ้าลายดอก", 29, 9, 30, "แฮนด์เมด", "scrunchies", "ผ้าคอตตอนลายดอก ไม่ดึงผม", 0, 63, 14],
+    ["p115", "กระเป๋าผ้าลายหัวใจ", 120, 55, 5, "แฮนด์เมด", "tote-bag", "เย็บมือ ใส่หนังสือ A4 ได้", 5, 40, 9],
+  ]],
+  ["s9", "student9", "student7", "หอมละมุน", "เทียนหอมและสบู่ทำมือ", "lavender", "ศาลาหน้าเสาธง", "หลังเลิกเรียน 15:30–16:30 น.", [
+    ["p116", "เทียนหอมในโหล", 69, 28, 10, "แฮนด์เมด", "candle", "ไขถั่วเหลือง กลิ่นวานิลลา จุดได้ 15 ชั่วโมง", 2, 35, 6],
+    ["p117", "สบู่ทำมือ ก้อนละ", 35, 12, 20, "แฮนด์เมด", "soap", "สบู่น้ำมันมะพร้าว อ่อนโยนต่อผิว", 0, 29, 4],
+    ["p118", "เทียนหอมลาเวนเดอร์", 79, 32, 8, "แฮนด์เมด", "candle-bottle", "กลิ่นลาเวนเดอร์ ช่วยให้ผ่อนคลายก่อนนอน", 2, 26, 5],
+  ]],
+  ["s10", "student10", "student8", "เครื่องเขียนพาสเทล", "ของใช้ในห้องเรียน สีสบายตา", "lime", "หน้าห้องพักครู", "พักเที่ยง 12:00–13:00 น.", [
+    ["p119", "ปากกาไฮไลต์สีพาสเทล", 15, 6, 40, "เครื่องเขียน", "highlighter", "สีอ่อน ไม่ทะลุกระดาษ", 0, 58, 7],
+    ["p120", "ดินสอสี 12 สี", 45, 24, 15, "เครื่องเขียน", "colored-pencils", "สีสด เหลาง่าย พร้อมกล่อง", 0, 33, 3],
+    ["p121", "ที่คั่นหนังสือวาดมือ", 19, 5, 25, "เครื่องเขียน", "bookmark", "วาดลายเส้นทีละชิ้น เคลือบกันน้ำ", 0, 42, 8],
+  ]],
+  ["s11", "student12", "student11", "ต้นไม้จิ๋วบนโต๊ะ", "แคคตัสและไม้อวบน้ำ เลี้ยงง่าย", "peach", "ใต้ตึกเรียน 3", "พักเที่ยง 12:00–13:00 น.", [
+    ["p122", "แคคตัสกระถางดินเผา", 59, 25, 12, "แฮนด์เมด", "cactus-clay", "รดน้ำสัปดาห์ละครั้ง วางริมหน้าต่าง", 0, 46, 9],
+    ["p123", "ไม้อวบน้ำกระถางฟ้า", 65, 28, 8, "แฮนด์เมด", "succulent", "กระถางเพ้นท์มือ เลือกสีได้", 1, 39, 7],
+    ["p124", "แคคตัสกระถางขาว", 49, 20, 10, "แฮนด์เมด", "cactus-white", "ขนาดพอดีโต๊ะเรียน", 0, 28, 4],
+  ]],
+];
+
+const REVIEW_TEXT = [
+  [5, "อร่อยมาก ไว้มาซื้ออีกนะ"],
+  [5, "รับของตรงเวลา ร้านน่ารัก"],
+  [4, "คุ้มราคา ของตรงรูป"],
+  [5, "ชอบมาก บอกเพื่อนต่อแล้ว"],
+  [4, "ดีค่ะ อยากให้มีหลายแบบกว่านี้"],
+];
+const BUYERS = ["student1", "student2", "student3", "student4", "student5", "student7", "student9", "student11"];
+
+/** ร้าน สินค้า ผู้ขาย รีวิว และออเดอร์ส่งมอบแล้วของตลาดตัวอย่าง (เวลาอิงจาก now) */
+export function marketExtras(now = Date.now()) {
+  const at = (daysAgo, hour) => {
+    const d = new Date(now - daysAgo * 864e5);
+    d.setUTCHours(hour - 7, (daysAgo * 7) % 50, 0, 0);
+    return d.toISOString();
+  };
+  const users = STUDENTS.map((s) => ({ ...s, role: "student", avatar: "" }));
+  const shops = [],
+    products = [],
+    reviews = [],
+    orders = [];
+  SHOPS.forEach(([id, ownerId, partner, name, tagline, color, boothLocation, openHours, items], si) => {
+    shops.push({ id, name, tagline, members: [ownerId, partner], classId: STUDENTS.find((s) => s.id === ownerId).classId, emoji: "", color, ownerId, boothLocation, openHours });
+    items.forEach(([pid, pname, price, cost, stock, category, image, description, leadDays, views, wishBase], pi) => {
+      products.push({ id: pid, shopId: id, active: true, name: pname, price, cost, stock, category, description, emoji: "", color, image: img(image), createdAt: at(20 + si, 9), views, wishBase, wishedBy: [], leadDays });
+      // 2 รีวิวต่อสินค้า
+      [0, 1].forEach((k) => {
+        const [rating, text] = REVIEW_TEXT[(si + pi + k * 2) % REVIEW_TEXT.length];
+        const userId = BUYERS[(si * 3 + pi + k * 4) % BUYERS.length];
+        reviews.push({ id: `r${pid}${k}`, productId: pid, userId, rating, text, date: at(1 + ((si + pi + k) % 9), 13) });
+      });
+      // ออเดอร์ส่งมอบแล้ว 2 รายการต่อสินค้า กระจายใน 14 วันที่ผ่านมา
+      [0, 1].forEach((k) => {
+        const day = (si * 2 + pi * 3 + k * 5) % 14;
+        const qty = 1 + ((si + pi + k) % 3);
+        const buyer = BUYERS[(si + pi * 2 + k * 3) % BUYERS.length];
+        const created = at(day + 1, [10, 12, 16][(pi + k) % 3]);
+        const delivered = at(day, [10, 12, 16][(pi + k) % 3]);
+        orders.push({
+          id: `order_m${pid}_${k}`,
+          buyer,
+          shopId: id,
+          items: [{ productId: pid, name: pname, price, originalPrice: price, cost, qty }],
+          status: "delivered",
+          pickupType: "booth",
+          pickup: boothLocation,
+          time: ["10:30", "12:00", "16:00"][(pi + k) % 3],
+          subtotal: price * qty,
+          discountAmount: 0,
+          voucherId: null,
+          promoCode: null,
+          total: price * qty,
+          date: created,
+          history: [
+            { status: "awaiting", by: buyer, date: created },
+            { status: "confirmed", by: ownerId, date: created },
+            { status: "delivered", by: ownerId, date: delivered },
+          ],
+        });
+      });
+    });
+  });
+  return { users, shops, products, reviews, orders };
+}
+
+/** เติมร้านตัวอย่างที่ยังไม่มีในข้อมูล (ไม่แตะของที่มีอยู่แล้ว) */
+export function addMarketExtras(state, now = Date.now()) {
+  const x = marketExtras(now);
+  const add = (key) => {
+    const ids = new Set((state[key] || []).map((v) => v.id));
+    state[key] = [...(state[key] || []), ...x[key].filter((v) => !ids.has(v.id))];
+  };
+  ["users", "shops", "products", "reviews", "orders"].forEach(add);
+  return state;
+}
