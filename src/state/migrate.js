@@ -2,6 +2,7 @@
 // แหล่งโค้ดจริงของ app.js — แก้ไขไฟล์ใน src/ แล้วรัน `npm run build`
 import { DEFAULT_BOOTHS, DEFAULT_OPEN_HOURS, SAMPLE_PRODUCT_IMAGES, dmThreadKey, leadDaysOf, shopThreadKey } from "../config/constants.js";
 import { Mn } from "../data/seed.js";
+import { addMarketExtras } from "../data/market-shops.js";
 
 /** Migration ของ state เก่าใน localStorage ให้ตรงกับ seed ปัจจุบัน */
 export function Qh(t) {
@@ -57,6 +58,12 @@ export function upgradeState(state) {
     if (!Array.isArray(s[key])) s[key] = [];
   }
   if (!s.progress || typeof s.progress !== "object") s.progress = {};
+
+  // ร้านตัวอย่างชุดใหม่ (8 ร้าน) — เติมครั้งเดียวให้ข้อมูลเก่าที่ยังไม่มี
+  if (!s.marketShopsV1 && Array.isArray(s.shops) && Array.isArray(s.products)) {
+    addMarketExtras(s);
+    s.marketShopsV1 = true;
+  }
 
   s.shops.forEach((shop, index) => {
     if (!Array.isArray(shop.members)) shop.members = [];

@@ -11,14 +11,23 @@ const ROLES = [
 ];
 
 const QUICK_USERS = [
-  { label: "มินต์ · ม.4/1", u: "mint", p: "password123", role: "student" },
-  { label: "ปัน · ม.4/1", u: "pun", p: "password123", role: "student" },
-  { label: "ฟ้า · ม.4/1", u: "fah", p: "password123", role: "student" },
-  { label: "ต้น · ม.4/2", u: "ton", p: "password123", role: "student" },
-  { label: "ครูพลอย · ม.4/1", u: "ploy", p: "password123", role: "teacher" },
-  { label: "ครูนนท์ · ม.4/2", u: "nont", p: "password123", role: "teacher" },
-  { label: "ผู้ดูแลระบบ", u: "admin", p: "admin123", role: "admin" },
+  { label: "มินต์ · ม.4/1", u: "mint", p: "password123", role: "student", id: "student1", name: "มินต์", classId: "c1" },
+  { label: "ปัน · ม.4/1", u: "pun", p: "password123", role: "student", id: "student2", name: "ปัน", classId: "c1" },
+  { label: "ฟ้า · ม.4/1", u: "fah", p: "password123", role: "student", id: "student3", name: "ฟ้า", classId: "c1" },
+  { label: "ต้น · ม.4/2", u: "ton", p: "password123", role: "student", id: "student4", name: "ต้น", classId: "c2" },
+  { label: "ครูพลอย · ม.4/1", u: "ploy", p: "password123", role: "teacher", id: "teacher1", name: "ครูพลอย", classId: "c1" },
+  { label: "ครูนนท์ · ม.4/2", u: "nont", p: "password123", role: "teacher", id: "teacher2", name: "ครูนนท์", classId: "c2" },
+  { label: "ผู้ดูแลระบบ", u: "admin", p: "admin123", role: "admin", id: "admin1", name: "ผู้ดูแลระบบ", classId: null },
 ];
+
+/** ไม่มีเซิร์ฟเวอร์ (เช่น เปิดจากเว็บโฮสติ้งแบบไฟล์อย่างเดียว): บัญชีทดลองยังเข้าได้ */
+function demoLogin(username, password) {
+  const u = String(username || "").trim().toLowerCase();
+  const qu = QUICK_USERS.find((q) => (q.u === u || q.id === u) && q.p === String(password || "").trim());
+  return qu
+    ? { success: true, user: { id: qu.id, name: qu.name, role: qu.role, avatar: "", classId: qu.classId } }
+    : { success: false, error: "ตอนนี้ใช้ได้เฉพาะบัญชีทดลองด้านล่าง" };
+}
 
 const CLASS_OPTIONS = [
   ["c1", "ม.4/1 (ครูพลอย)"],
@@ -33,6 +42,7 @@ async function postJson(url, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  if (!res.ok || !(res.headers.get("content-type") || "").includes("json")) throw new Error("no-server");
   return res.json();
 }
 
@@ -64,7 +74,7 @@ export function LoginPage({ onLogin }) {
     try {
       handleResult(await postJson("/api/auth/login", { username: qu.u, password: qu.p }), "เข้าสู่ระบบไม่สำเร็จ");
     } catch (ex) {
-      setError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้");
+      handleResult(demoLogin(qu.u, qu.p), "เข้าสู่ระบบไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
@@ -80,7 +90,8 @@ export function LoginPage({ onLogin }) {
         : await postJson("/api/auth/login", { username, password });
       handleResult(data, "เกิดข้อผิดพลาด กรุณาลองใหม่");
     } catch (ex) {
-      setError("เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ กรุณาตรวจสอบการเชื่อมต่อ");
+      if (registering) setError("สมัครสมาชิกได้เมื่อเชื่อมต่อเซิร์ฟเวอร์");
+      else handleResult(demoLogin(username, password), "เข้าสู่ระบบไม่สำเร็จ");
     } finally {
       setLoading(false);
     }
